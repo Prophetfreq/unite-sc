@@ -2,15 +2,8 @@ import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence, useInView } from 'framer-motion'
 import { ArrowRight, Circle, X } from '@phosphor-icons/react'
 import { ComposableMap, Geographies, Geography } from 'react-simple-maps'
-import { createClient } from '@supabase/supabase-js'
 import content from './content.json'
-
-// ─── Supabase ─────────────────────────────────────────────────────────────────
-
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL,
-  import.meta.env.VITE_SUPABASE_ANON_KEY,
-)
+import { supabase } from './supabase.js'
 
 // ─── Data ────────────────────────────────────────────────────────────────────
 

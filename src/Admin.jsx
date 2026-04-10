@@ -1,17 +1,6 @@
 import { useState, useEffect } from 'react'
-import { createClient } from '@supabase/supabase-js'
 import { motion, AnimatePresence } from 'framer-motion'
-
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL,
-  import.meta.env.VITE_SUPABASE_ANON_KEY,
-)
-
-// Service role key for writes — kept client-side since this panel is password protected
-const supabaseAdmin = createClient(
-  import.meta.env.VITE_SUPABASE_URL,
-  import.meta.env.VITE_SUPABASE_SERVICE_KEY,
-)
+import { supabase, supabaseAdmin } from './supabase.js'
 
 const ALL_COUNTIES = [
   'Abbeville','Aiken','Allendale','Anderson','Bamberg','Barnwell','Beaufort',
