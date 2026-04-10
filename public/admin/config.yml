@@ -1,0 +1,84 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: public/uploads
+public_folder: /uploads
+
+collections:
+  - name: "site"
+    label: "Site Content"
+    files:
+      - name: "hero"
+        label: "Hero Section"
+        file: "src/content.json"
+        fields:
+          - label: "Hero"
+            name: "hero"
+            widget: "object"
+            fields:
+              - { label: "Main Headline", name: "headline", widget: "string" }
+              - { label: "Italic Subheadline", name: "subheadline", widget: "string" }
+              - { label: "Description", name: "description", widget: "text" }
+              - { label: "Primary Button Text", name: "cta_primary", widget: "string" }
+              - { label: "Secondary Button Text", name: "cta_secondary", widget: "string" }
+          - label: "Mandate Section"
+            name: "mandate"
+            widget: "object"
+            fields:
+              - { label: "Eyebrow Label", name: "eyebrow", widget: "string" }
+              - { label: "Headline", name: "headline", widget: "string" }
+              - { label: "Headline (italic part)", name: "headline_italic", widget: "string" }
+              - { label: "Body Text", name: "body", widget: "text" }
+              - { label: "Pull Quote", name: "pull_quote", widget: "text" }
+              - { label: "Pull Quote Reference", name: "pull_quote_ref", widget: "string" }
+              - { label: "Sent From — Name", name: "sent_from_name", widget: "string" }
+              - { label: "Sent From — Church", name: "sent_from_church", widget: "string" }
+              - { label: "Sent From — Organisation", name: "sent_from_org", widget: "string" }
+              - { label: "Model Heading", name: "model_heading", widget: "string" }
+              - { label: "Model Body", name: "model_body", widget: "text" }
+              - label: "What This Is / Is Not"
+                name: "contrasts"
+                widget: "list"
+                fields:
+                  - { label: "NOT", name: "not", widget: "string" }
+                  - { label: "IS", name: "is", widget: "string" }
+          - label: "Prayer Section"
+            name: "prayer"
+            widget: "object"
+            fields:
+              - { label: "Eyebrow Label", name: "eyebrow", widget: "string" }
+              - { label: "Headline", name: "headline", widget: "string" }
+              - { label: "Headline (italic part)", name: "headline_italic", widget: "string" }
+              - { label: "Body Text", name: "body", widget: "text" }
+              - { label: "Intercession Team Heading", name: "intercession_heading", widget: "string" }
+              - { label: "Intercession Team Body", name: "intercession_body", widget: "text" }
+              - label: "Prayer Points"
+                name: "prayer_items"
+                widget: "list"
+                field: { label: "Prayer Point", name: "item", widget: "string" }
+              - label: "What Is Left Behind"
+                name: "left_behind_items"
+                widget: "list"
+                field: { label: "Item", name: "item", widget: "string" }
+          - label: "Support Section"
+            name: "support"
+            widget: "object"
+            fields:
+              - { label: "Eyebrow Label", name: "eyebrow", widget: "string" }
+              - { label: "Headline", name: "headline", widget: "string" }
+              - { label: "Headline (italic part)", name: "headline_italic", widget: "string" }
+              - { label: "Body Text", name: "body", widget: "text" }
+              - { label: "Giving Link URL", name: "give_url", widget: "string" }
+          - label: "Footer"
+            name: "footer"
+            widget: "object"
+            fields:
+              - { label: "Tagline", name: "tagline", widget: "string" }
+              - { label: "Contact Email", name: "contact_email", widget: "string" }
+          - label: "Scriptures"
+            name: "scriptures"
+            widget: "list"
+            fields:
+              - { label: "Verse", name: "verse", widget: "text" }
+              - { label: "Reference", name: "ref", widget: "string" }

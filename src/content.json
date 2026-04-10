@@ -1,0 +1,76 @@
+{
+  "hero": {
+    "headline": "County by county",
+    "subheadline": "across South Carolina.",
+    "description": "A prophetic visitation — 46 counties, one mandate. Finding the gatekeeper of each territory, releasing a word, and leaving the county carrying what God released.",
+    "cta_primary": "View All 46 Counties",
+    "cta_secondary": "Read the Mandate"
+  },
+  "mandate": {
+    "eyebrow": "The Assignment",
+    "headline": "This is not a conference.",
+    "headline_italic": "It is a mandate.",
+    "body": "Unite South Carolina is a prophetic assignment given to Reuben and Grace Kora — to travel county by county across all 46 counties of South Carolina, find the gatekeeper of each area, and minister as a traveling prophetic voice into that territory. The assignment is simple: go. Find the one who holds the gate. Be received. Let God move.",
+    "pull_quote": "The goal is not 46 events. The goal is 46 counties that have been visited, spoken over, and released into their assignment.",
+    "pull_quote_ref": "Romans 10:15 (ESV)",
+    "sent_from_name": "Reuben & Grace Kora",
+    "sent_from_church": "Glory City Church Aiken",
+    "sent_from_org": "Radiant Eternity — Aiken, South Carolina",
+    "sent_from_year": "2026 Initiative",
+    "model_heading": "The Model",
+    "model_body": "Jesus sent His disciples two by two — no bag, no elaborate plan. They went. They found the person of peace. They stayed. They ministered. They moved on.",
+    "contrasts": [
+      { "not": "A conference or tour", "is": "A prophetic visitation — county by county" },
+      { "not": "A structure to be built", "is": "A mandate to be carried and released" },
+      { "not": "Recruiting leaders to join something", "is": "Finding those already holding the gate" },
+      { "not": "About platforms or visibility", "is": "About territory and the body of Christ in SC" }
+    ]
+  },
+  "prayer": {
+    "eyebrow": "Prayer & Intercession",
+    "headline": "This is a prayer assignment",
+    "headline_italic": "first.",
+    "body": "Every county must be prayed over before arrival. Thirty days of targeted intercession precedes each visit — the prophetic visitation is the harvest of prayer. The ground is prepared in the spirit before the word lands in the natural.",
+    "intercession_heading": "Intercession Team",
+    "intercession_body": "A small team of 3–7 trusted intercessors covers the entire journey — praying over each county during the 30-day cycle, covering travel protection, and praying in real time during each visit.",
+    "prayer_items": [
+      "The spiritual history of the county — what has been established and what needs to be broken",
+      "The gatekeeper — their readiness, protection, and openness to receive",
+      "The people who will be in the room — that the right ones will be gathered",
+      "The word God wants to release — that it would be clear before you arrive",
+      "The territory itself — declaration of God's purposes over the land"
+    ],
+    "left_behind_items": [
+      "A spoken word over the county — on record if the host chooses",
+      "A prophetic release over the gatekeeper and key leaders",
+      "A county declaration — written or spoken",
+      "Prayer covering — intercession continues after departure"
+    ]
+  },
+  "support": {
+    "eyebrow": "Support the Mandate",
+    "headline": "Every county visited",
+    "headline_italic": "starts with a yes.",
+    "body": "This mandate moves by faith and by the generosity of those who believe in what God is doing across South Carolina. Your support covers travel, accommodation, and the costs of each county visit.",
+    "give_url": "https://radicallove.us/unite-sc"
+  },
+  "footer": {
+    "tagline": "46 counties. Two sent ones. One mandate.",
+    "contact_label": "Contact",
+    "contact_email": "hello@radicallove.us"
+  },
+  "scriptures": [
+    {
+      "verse": "\"How beautiful are the feet of those who bring good news.\"",
+      "ref": "Romans 10:15 (ESV)"
+    },
+    {
+      "verse": "\"I will give you every place where you set your foot.\"",
+      "ref": "Joshua 1:3 (NIV)"
+    },
+    {
+      "verse": "\"Behold, how good and how pleasant it is for brethren to dwell together in unity! For there the LORD commanded the blessing — life forevermore.\"",
+      "ref": "Psalm 133:1–3 (NKJV)"
+    }
+  ]
+}
