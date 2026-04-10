@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { supabase, supabaseAdmin } from './supabase.js'
+import { supabase } from './supabase.js'
 
 const ALL_COUNTIES = [
   'Abbeville','Aiken','Allendale','Anderson','Bamberg','Barnwell','Beaufort',
@@ -11,8 +11,6 @@ const ALL_COUNTIES = [
   'McCormick','Marion','Marlboro','Newberry','Oconee','Orangeburg','Pickens',
   'Richland','Saluda','Spartanburg','Sumter','Union','Williamsburg','York',
 ].sort()
-
-const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD || 'uniteSC2026'
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -59,20 +57,31 @@ function Toast({ message, type }) {
   )
 }
 
-// ─── Login Screen ─────────────────────────────────────────────────────────────
+// ─── Login Screen (Supabase Auth) ─────────────────────────────────────────────
 
 function LoginScreen({ onLogin }) {
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [error, setError] = useState(false)
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault()
-    if (password === ADMIN_PASSWORD) {
-      onLogin()
-    } else {
-      setError(true)
+    setLoading(true)
+    setError('')
+
+    const { error: authError } = await supabase.auth.signInWithPassword({
+      email: email.trim(),
+      password,
+    })
+
+    setLoading(false)
+
+    if (authError) {
+      setError('Invalid email or password.')
       setPassword('')
-      setTimeout(() => setError(false), 2000)
+    } else {
+      onLogin()
     }
   }
 
@@ -94,25 +103,41 @@ function LoginScreen({ onLogin }) {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
+            <Label>Email</Label>
+            <Input
+              type="email"
+              placeholder="your@email.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              autoFocus
+              required
+              style={{ color: '#1A1A1A', background: 'white' }}
+            />
+          </div>
+
+          <div>
             <Label>Password</Label>
             <motion.div animate={error ? { x: [-6, 6, -4, 4, 0] } : {}} transition={{ duration: 0.3 }}>
               <Input
                 type="password"
-                placeholder="Enter password"
+                placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                autoFocus
+                required
+                style={{ color: '#1A1A1A', background: 'white' }}
               />
             </motion.div>
             {error && (
-              <p className="text-[#C4572B] text-xs font-mono mt-2">Incorrect password</p>
+              <p className="text-[#C4572B] text-xs font-mono mt-2">{error}</p>
             )}
           </div>
+
           <button
             type="submit"
-            className="w-full bg-[#2E5240] text-white font-semibold text-sm py-3.5 rounded-2xl hover:bg-[#3A6450] active:scale-[0.98] transition-all duration-200"
+            disabled={loading}
+            className="w-full bg-[#2E5240] text-white font-semibold text-sm py-3.5 rounded-2xl hover:bg-[#3A6450] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
           >
-            Enter
+            {loading ? 'Signing in…' : 'Sign In'}
           </button>
         </form>
       </motion.div>
@@ -171,24 +196,39 @@ function VisitForm({ countyName, existing, onSave, onCancel }) {
   async function handlePhotoUpload(e) {
     const files = Array.from(e.target.files)
     if (!files.length) return
-    setUploading(true)
 
+    // Validate file types and sizes
+    const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/heic']
+    const MAX_SIZE_MB = 10
+    for (const file of files) {
+      if (!ALLOWED_TYPES.includes(file.type)) {
+        alert(`${file.name} is not a supported image type.`)
+        return
+      }
+      if (file.size > MAX_SIZE_MB * 1024 * 1024) {
+        alert(`${file.name} is too large (max ${MAX_SIZE_MB}MB).`)
+        return
+      }
+    }
+
+    setUploading(true)
     const uploaded = []
+
     for (let i = 0; i < files.length; i++) {
       const file = files[i]
-      setUploadProgress(`Uploading ${i + 1} of ${files.length}...`)
+      setUploadProgress(`Uploading ${i + 1} of ${files.length}…`)
 
-      // Sanitize filename
-      const ext = file.name.split('.').pop()
-      const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
+      // Safe random filename — no user-controlled extension in final path
+      const safeExt = file.type.split('/')[1].replace('jpeg', 'jpg')
+      const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.${safeExt}`
       const path = `${form.county_name}/${fileName}`
 
-      const { error } = await supabaseAdmin.storage
+      const { error } = await supabase.storage
         .from('county-photos')
         .upload(path, file, { upsert: false })
 
       if (!error) {
-        const { data: urlData } = supabaseAdmin.storage
+        const { data: urlData } = supabase.storage
           .from('county-photos')
           .getPublicUrl(path)
         uploaded.push(urlData.publicUrl)
@@ -210,15 +250,15 @@ function VisitForm({ countyName, existing, onSave, onCancel }) {
     setSaving(true)
 
     const payload = {
-      county_name: form.county_name,
+      county_name: form.county_name.trim().slice(0, 100),
       visited: form.visited,
-      visit_date: form.visit_date || null,
-      church_name: form.church_name || null,
-      summary: form.summary || null,
+      visit_date: form.visit_date?.trim().slice(0, 50) || null,
+      church_name: form.church_name?.trim().slice(0, 200) || null,
+      summary: form.summary?.trim().slice(0, 5000) || null,
       photos,
     }
 
-    const { error } = await supabaseAdmin
+    const { error } = await supabase
       .from('county_visits')
       .upsert(payload, { onConflict: 'county_name' })
 
@@ -327,7 +367,6 @@ function VisitForm({ countyName, existing, onSave, onCancel }) {
         <div>
           <Label>Photos</Label>
 
-          {/* Upload button */}
           <label className={`flex items-center justify-center gap-2 w-full border-2 border-dashed rounded-2xl py-5 text-sm font-semibold cursor-pointer transition-all duration-200 ${
             uploading
               ? 'border-[#2E5240]/30 text-[#9A9A8A] cursor-not-allowed'
@@ -336,7 +375,7 @@ function VisitForm({ countyName, existing, onSave, onCancel }) {
             <span>{uploading ? uploadProgress : '+ Add Photos'}</span>
             <input
               type="file"
-              accept="image/*"
+              accept="image/jpeg,image/png,image/webp,image/heic"
               multiple
               className="hidden"
               onChange={handlePhotoUpload}
@@ -344,7 +383,6 @@ function VisitForm({ countyName, existing, onSave, onCancel }) {
             />
           </label>
 
-          {/* Photo grid */}
           {photos.length > 0 && (
             <div className="grid grid-cols-3 gap-2 mt-3">
               {photos.map((url, i) => (
@@ -380,23 +418,30 @@ function VisitForm({ countyName, existing, onSave, onCancel }) {
 // ─── Admin Panel ──────────────────────────────────────────────────────────────
 
 export default function Admin() {
-  const [authed, setAuthed] = useState(() => sessionStorage.getItem('admin_auth') === 'true')
+  const [session, setSession] = useState(undefined) // undefined = loading, null = not authed
   const [visits, setVisits] = useState({})
   const [loading, setLoading] = useState(true)
-  const [editing, setEditing] = useState(null) // { countyName, existing }
-  const [filter, setFilter] = useState('all') // 'all' | 'visited' | 'pending'
+  const [editing, setEditing] = useState(null)
+  const [filter, setFilter] = useState('all')
   const [search, setSearch] = useState('')
   const [toast, setToast] = useState(null)
 
-  function handleLogin() {
-    sessionStorage.setItem('admin_auth', 'true')
-    setAuthed(true)
-  }
+  // Check Supabase auth session on mount
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session)
+    })
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session)
+    })
+
+    return () => subscription.unsubscribe()
+  }, [])
 
   useEffect(() => {
-    if (!authed) return
-    fetchVisits()
-  }, [authed])
+    if (session) fetchVisits()
+  }, [session])
 
   async function fetchVisits() {
     setLoading(true)
@@ -433,7 +478,25 @@ export default function Admin() {
     }
   }
 
-  if (!authed) return <LoginScreen onLogin={handleLogin} />
+  async function handleLogout() {
+    await supabase.auth.signOut()
+  }
+
+  // Still loading auth state
+  if (session === undefined) {
+    return (
+      <div className="min-h-dvh bg-[#0F2219] flex items-center justify-center">
+        <div className="font-mono text-[#4A7A62] text-xs tracking-widest animate-pulse">
+          Loading…
+        </div>
+      </div>
+    )
+  }
+
+  // Not logged in
+  if (!session) {
+    return <LoginScreen onLogin={() => {}} />
+  }
 
   const visitedCount = Object.values(visits).filter((v) => v?.visited).length
 
@@ -478,6 +541,9 @@ export default function Admin() {
                     Unite SC — Admin
                   </p>
                   <h1 className="font-bold text-[#1A1A1A] text-2xl tracking-tight">County Visits</h1>
+                  <p className="text-[#9A9A8A] text-xs mt-0.5 font-mono truncate max-w-[180px]">
+                    {session.user.email}
+                  </p>
                 </div>
                 <div className="text-right">
                   <div className="font-bold text-[#2E5240] text-2xl">{visitedCount}</div>
@@ -531,10 +597,10 @@ export default function Admin() {
 
               {/* Logout */}
               <button
-                onClick={() => { sessionStorage.removeItem('admin_auth'); setAuthed(false) }}
+                onClick={handleLogout}
                 className="w-full mt-8 py-3 text-[#9A9A8A] font-mono text-xs hover:text-[#6B6B5A] transition-colors"
               >
-                Log out
+                Sign out
               </button>
             </motion.div>
           )}
