@@ -1,8 +1,9 @@
-import { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useContext } from 'react'
 import { motion, AnimatePresence, useInView } from 'framer-motion'
 import { ArrowRight, Circle, X } from '@phosphor-icons/react'
 import { ComposableMap, Geographies, Geography } from 'react-simple-maps'
-import content from './content.json'
+import contentFallback from './content.json'
+import { getSiteSettings } from './sanityClient'
 import { supabase } from './supabase.js'
 
 // ─── Data ────────────────────────────────────────────────────────────────────
@@ -86,7 +87,12 @@ const GATEKEEPER_TRAITS = [
   },
 ]
 
-const SCRIPTURES = content.scriptures
+// Hook to access site content from Sanity (or fallback JSON)
+function useContent() {
+  return useContext(ContentContext)
+}
+
+const SCRIPTURES = contentFallback.scriptures
 
 // ─── Animation Variants ───────────────────────────────────────────────────────
 
@@ -172,6 +178,7 @@ function Navbar() {
 // ─── Hero ─────────────────────────────────────────────────────────────────────
 
 function Hero() {
+  const content = useContent()
   return (
     <section className="relative min-h-[100dvh] flex flex-col justify-end pb-16 md:pb-20 px-6 md:px-16 overflow-hidden">
       <div className="absolute inset-0 z-0">
@@ -255,6 +262,7 @@ function Hero() {
 // ─── Mandate ──────────────────────────────────────────────────────────────────
 
 function MandateSection() {
+  const content = useContent()
   const ref = useRef(null)
   const inView = useInView(ref, { once: true, margin: '-80px' })
 
@@ -771,6 +779,7 @@ function GatekeeperSection() {
 // ─── Prayer ───────────────────────────────────────────────────────────────────
 
 function PrayerSection() {
+  const content = useContent()
   const ref = useRef(null)
   const inView = useInView(ref, { once: true, margin: '-80px' })
 
@@ -861,6 +870,7 @@ function PrayerSection() {
 // ─── Footer ───────────────────────────────────────────────────────────────────
 
 function Footer() {
+  const content = useContent()
   return (
     <footer className="bg-[#1C3A2A] rounded-t-[4rem] px-6 md:px-16 pt-16 pb-10">
       <div className="max-w-[1400px] mx-auto">
@@ -949,6 +959,7 @@ const TIERS = [
 ]
 
 function SupportSection() {
+  const content = useContent()
   const ref = useRef(null)
   const inView = useInView(ref, { once: true, margin: '-80px' })
 
@@ -1089,11 +1100,73 @@ function SupportSection() {
   )
 }
 
+// ─── Content Context ─────────────────────────────────────────────────────────
+
+export const ContentContext = React.createContext(contentFallback)
+
 // ─── App ──────────────────────────────────────────────────────────────────────
 
 export default function App() {
+  const [siteContent, setSiteContent] = useState(null)
+
+  useEffect(() => {
+    getSiteSettings().then((data) => {
+      if (data) {
+        // Map Sanity flat fields back to content.json shape
+        setSiteContent({
+          hero: {
+            headline: data.heroHeadline,
+            subheadline: data.heroSubheadline,
+            description: data.heroDescription,
+            cta_primary: data.heroCTAPrimary,
+            cta_secondary: data.heroCTASecondary,
+          },
+          mandate: {
+            eyebrow: data.mandateEyebrow,
+            headline: data.mandateHeadline,
+            headline_italic: data.mandateHeadlineItalic,
+            body: data.mandateBody,
+            pull_quote: data.mandatePullQuote,
+            pull_quote_ref: data.mandatePullQuoteRef,
+            sent_from_name: data.mandateSentFromName,
+            sent_from_church: data.mandateSentFromChurch,
+            sent_from_org: data.mandateSentFromOrg,
+            sent_from_year: data.mandateSentFromYear,
+            model_heading: data.mandateModelHeading,
+            model_body: data.mandateModelBody,
+            contrasts: data.mandateContrasts || [],
+          },
+          prayer: {
+            eyebrow: data.prayerEyebrow,
+            headline: data.prayerHeadline,
+            headline_italic: data.prayerHeadlineItalic,
+            body: data.prayerBody,
+            intercession_heading: data.prayerIntercessionHeading,
+            intercession_body: data.prayerIntercessionBody,
+            prayer_items: data.prayerItems || [],
+            left_behind_items: data.prayerLeftBehind || [],
+          },
+          support: {
+            eyebrow: data.supportEyebrow,
+            headline: data.supportHeadline,
+            headline_italic: data.supportHeadlineItalic,
+            body: data.supportBody,
+            give_url: data.supportGiveUrl,
+          },
+          footer: {
+            tagline: data.footerTagline,
+            contact_email: data.footerContactEmail,
+          },
+          scriptures: data.scriptures || [],
+        })
+      }
+    }).catch(() => {})
+  }, [])
+
+  const content = siteContent || contentFallback
+
   return (
-    <>
+    <ContentContext.Provider value={content}>
       <NoiseOverlay />
       <Navbar />
       <main>
@@ -1105,6 +1178,6 @@ export default function App() {
         <SupportSection />
       </main>
       <Footer />
-    </>
+    </ContentContext.Provider>
   )
 }
