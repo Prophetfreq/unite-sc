@@ -135,38 +135,38 @@ function Navbar() {
 
   return (
     <motion.nav
-      className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-6 px-5 py-3 rounded-full transition-all duration-500 ${
+      className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 grid grid-cols-[auto_1fr_auto] items-center px-6 py-3.5 rounded-full transition-all duration-500 min-w-[520px] md:min-w-[700px] ${
         scrolled
-          ? 'bg-[#F5F0E8]/85 backdrop-blur-xl border border-[#1C3A2A]/12 shadow-[0_4px_24px_-4px_rgba(28,58,42,0.10)]'
-          : 'bg-transparent'
+          ? 'bg-[#F5F0E8]/90 backdrop-blur-xl border border-[#1C3A2A]/12 shadow-[0_4px_24px_-4px_rgba(28,58,42,0.12)]'
+          : 'bg-[#0A1A10]/30 backdrop-blur-sm border border-white/10'
       }`}
       initial={{ y: -24, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.65, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
     >
-      {/* Logo or brand name */}
-      {/* Navbar wordmark */}
-      <div className="flex items-center gap-1">
-        <span className={`font-bold text-sm tracking-[0.12em] transition-colors duration-400 ${
+      {/* Wordmark — left */}
+      <div className="flex items-center gap-1 pr-6">
+        <span className={`font-bold text-base tracking-[0.12em] transition-colors duration-400 ${
           scrolled ? 'text-[#1C3A2A]' : 'text-[#F5F0E8]'
         }`}>
           UNITE
         </span>
-        <span className={`font-light text-xs tracking-[0.18em] transition-colors duration-400 ${
+        <span className={`font-light text-sm tracking-[0.18em] transition-colors duration-400 ${
           scrolled ? 'text-[#1C3A2A]/60' : 'text-[#F5F0E8]/55'
         }`}>
           SC
         </span>
-        <span className="text-[#C4572B] font-bold text-sm ml-0.5">+</span>
+        <span className="text-[#C4572B] font-bold text-base ml-0.5">+</span>
       </div>
 
-      <div className="hidden md:flex items-center gap-5">
+      {/* Nav links — centered */}
+      <div className="hidden md:flex items-center justify-center gap-7">
         {navLinks.map(({ label, href }) => (
           <a
             key={href}
             href={href}
-            className={`text-xs font-medium transition-all duration-300 hover:-translate-y-px ${
-              scrolled ? 'text-[#6B6B5A] hover:text-[#1C3A2A]' : 'text-[#F5F0E8]/65 hover:text-[#F5F0E8]'
+            className={`text-sm font-medium transition-all duration-300 hover:-translate-y-px whitespace-nowrap ${
+              scrolled ? 'text-[#6B6B5A] hover:text-[#1C3A2A]' : 'text-[#F5F0E8]/70 hover:text-[#F5F0E8]'
             }`}
           >
             {label}
@@ -174,9 +174,10 @@ function Navbar() {
         ))}
       </div>
 
+      {/* CTA — right */}
       <a
         href="#counties"
-        className={`text-xs font-semibold px-4 py-2 rounded-full transition-all duration-300 hover:scale-[1.03] active:scale-[0.98] ${
+        className={`ml-6 text-sm font-semibold px-5 py-2 rounded-full transition-all duration-300 hover:scale-[1.03] active:scale-[0.98] whitespace-nowrap ${
           scrolled
             ? 'bg-[#C4572B] text-[#F5F0E8]'
             : 'bg-[#F5F0E8]/12 border border-[#F5F0E8]/25 text-[#F5F0E8]'
@@ -185,6 +186,146 @@ function Navbar() {
         {nav.navCTALabel || 'View Counties'}
       </a>
     </motion.nav>
+  )
+}
+
+// ─── Hero Progress Card ───────────────────────────────────────────────────────
+
+function HeroProgressCard() {
+  const [visited, setVisited] = useState(0)
+  const [regionCounts, setRegionCounts] = useState({})
+  const TOTAL = 46
+
+  useEffect(() => {
+    supabase
+      .from('county_visits')
+      .select('county')
+      .then(({ data }) => {
+        if (!data) return
+        const names = data.map(r => r.county)
+        setVisited(names.length)
+        const rc = {}
+        for (const [region, info] of Object.entries(COUNTIES)) {
+          rc[region] = info.counties.filter(c => names.includes(c)).length
+        }
+        setRegionCounts(rc)
+      })
+  }, [])
+
+  const pct = Math.round((visited / TOTAL) * 100)
+  const circumference = 2 * Math.PI * 38
+  const dashOffset = circumference - (circumference * pct) / 100
+
+  const SCRIPTURE = {
+    verse: '"He made from one man every nation of mankind to live on all the face of the earth, having determined allotted periods and the boundaries of their dwelling place."',
+    ref: 'Acts 17:26',
+  }
+
+  return (
+    <motion.div
+      variants={fadeUp}
+      className="lg:mb-0 mb-0"
+    >
+      {/* Progress ring card */}
+      <div
+        className="rounded-[1.75rem] p-6 border border-white/12 backdrop-blur-md mb-4"
+        style={{ background: 'rgba(10, 26, 16, 0.55)' }}
+      >
+        <p className="font-mono text-[#4A7A62] text-[0.6rem] tracking-[0.25em] uppercase mb-4">
+          County Coverage
+        </p>
+
+        <div className="flex items-center gap-6 mb-5">
+          {/* SVG ring */}
+          <div className="relative flex-shrink-0">
+            <svg width="96" height="96" viewBox="0 0 96 96" className="-rotate-90">
+              {/* Track */}
+              <circle cx="48" cy="48" r="38" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="6" />
+              {/* Progress */}
+              <motion.circle
+                cx="48" cy="48" r="38"
+                fill="none"
+                stroke="#C4572B"
+                strokeWidth="6"
+                strokeLinecap="round"
+                strokeDasharray={circumference}
+                initial={{ strokeDashoffset: circumference }}
+                animate={{ strokeDashoffset: dashOffset }}
+                transition={{ duration: 1.6, delay: 1.2, ease: [0.16, 1, 0.3, 1] }}
+              />
+            </svg>
+            <div className="absolute inset-0 flex flex-col items-center justify-center">
+              <motion.span
+                className="font-mono text-white font-bold text-xl leading-none"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1.4 }}
+              >
+                {pct}%
+              </motion.span>
+              <span className="font-mono text-white/35 text-[0.5rem] tracking-widest mt-0.5">done</span>
+            </div>
+          </div>
+
+          {/* Counts */}
+          <div className="flex-1 min-w-0">
+            <div className="flex items-baseline gap-1.5 mb-0.5">
+              <span className="font-mono text-white font-bold text-3xl leading-none">{visited}</span>
+              <span className="font-mono text-white/35 text-sm">/ {TOTAL}</span>
+            </div>
+            <p className="text-[#E8DCC8]/55 text-xs leading-snug">counties visited</p>
+
+            {/* Region breakdown */}
+            <div className="mt-3 space-y-1.5">
+              {Object.entries(COUNTIES).map(([region, info]) => {
+                const count = regionCounts[region] || 0
+                const total = info.counties.length
+                const pctR = (count / total) * 100
+                return (
+                  <div key={region}>
+                    <div className="flex justify-between items-center mb-0.5">
+                      <span className="text-white/40 text-[0.6rem] font-mono tracking-wider">{region}</span>
+                      <span className="text-white/40 text-[0.6rem] font-mono">{count}/{total}</span>
+                    </div>
+                    <div className="h-[3px] rounded-full bg-white/8 overflow-hidden">
+                      <motion.div
+                        className="h-full rounded-full"
+                        style={{ background: REGION_COLORS[region] }}
+                        initial={{ width: 0 }}
+                        animate={{ width: `${pctR}%` }}
+                        transition={{ duration: 1.2, delay: 1.4, ease: [0.16, 1, 0.3, 1] }}
+                      />
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        </div>
+
+        {/* Pulsing status */}
+        <div className="flex items-center gap-2 pt-4 border-t border-white/8">
+          <span className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#4A7A62] opacity-75" />
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-[#4A7A62]" />
+          </span>
+          <span className="font-mono text-[#4A7A62] text-[0.6rem] tracking-wider">Mission active — 2026</span>
+        </div>
+      </div>
+
+      {/* Scripture card */}
+      <div
+        className="rounded-[1.75rem] p-5 border border-white/8"
+        style={{ background: 'rgba(10, 26, 16, 0.35)' }}
+      >
+        <p className="text-[#E8DCC8]/60 text-xs italic leading-relaxed mb-2">
+          {SCRIPTURE.verse}
+        </p>
+        <p className="font-mono text-[#C4572B]/80 text-[0.6rem] tracking-[0.2em] uppercase">
+          {SCRIPTURE.ref}
+        </p>
+      </div>
+    </motion.div>
   )
 }
 
@@ -258,7 +399,7 @@ function Hero() {
             animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
             transition={{ duration: 0.6, delay: 0.62, ease: [0.16, 1, 0.3, 1] }}
             className="text-white/50 font-light leading-none"
-            style={{ fontSize: 'clamp(2rem, 4.5vw, 4.5rem)', letterSpacing: '0.18em' }}
+            style={{ fontSize: 'clamp(2.8rem, 6vw, 6.5rem)', letterSpacing: '0.18em' }}
           >
             SC
           </motion.span>
@@ -270,7 +411,7 @@ function Hero() {
             transition={{ duration: 0.8, delay: 0.82, ease: [0.34, 1.56, 0.64, 1] }}
             className="text-[#C4572B] font-bold leading-none"
             style={{
-              fontSize: 'clamp(2rem, 4vw, 4.5rem)',
+              fontSize: 'clamp(2.8rem, 5.5vw, 6rem)',
               textShadow: '0 0 30px rgba(196,87,43,1), 0 0 70px rgba(196,87,43,0.5)',
               animation: 'logoPulse 3s ease-in-out infinite',
               animationDelay: '1.6s',
@@ -302,68 +443,73 @@ function Hero() {
       </div>
 
       <motion.div
-        className="relative z-10 max-w-[1400px] mx-auto w-full"
+        className="relative z-10 max-w-[1400px] mx-auto w-full grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-8 lg:gap-16 items-end"
         variants={stagger}
         initial="hidden"
         animate="visible"
       >
-
-        <motion.p
-          variants={fadeUp}
-          className="font-mono text-[#E8DCC8]/80 text-xs tracking-widest uppercase mb-5"
-        >
-          Reuben & Grace Kora — A Prophetic Mandate — 2026
-        </motion.p>
-
-        <motion.h1
-          variants={fadeUp}
-          className="text-[#F5F0E8] font-bold text-4xl sm:text-5xl md:text-6xl lg:text-7xl tracking-tight leading-none mb-1"
-        >
-          {content.hero.headline}
-        </motion.h1>
-
-        <motion.div variants={fadeUp}>
-          <span className="font-display italic text-[#C4572B] text-5xl sm:text-6xl md:text-7xl lg:text-[6rem] leading-none block mb-6">
-            {content.hero.subheadline}
-          </span>
-        </motion.div>
-
-        <motion.p
-          variants={fadeUp}
-          className="text-[#E8DCC8] text-base md:text-lg max-w-[52ch] leading-relaxed mb-8 [text-shadow:0_1px_12px_rgba(10,26,16,0.6)]"
-        >
-          {content.hero.description}
-        </motion.p>
-
-        <motion.div variants={fadeUp} className="flex flex-wrap gap-3 items-center mb-12">
-          <a
-            href="#counties"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-[#C4572B] text-[#F5F0E8] rounded-full font-semibold text-sm transition-all duration-300 hover:scale-[1.03] active:scale-[0.98]"
+        {/* ── Left: existing hero content ── */}
+        <div>
+          <motion.p
+            variants={fadeUp}
+            className="font-mono text-[#E8DCC8]/80 text-xs tracking-widest uppercase mb-5"
           >
-            {content.hero.cta_primary}
-            <ArrowRight weight="bold" size={14} />
-          </a>
-          <a
-            href="#the-mandate"
-            className="inline-flex items-center gap-2 px-6 py-3 border border-[#F5F0E8]/22 text-[#F5F0E8] rounded-full font-medium text-sm transition-all duration-300 hover:border-[#F5F0E8]/45 hover:-translate-y-px"
-          >
-            {content.hero.cta_secondary}
-          </a>
-        </motion.div>
+            Reuben & Grace Kora — A Prophetic Mandate — 2026
+          </motion.p>
 
-        <motion.div variants={fadeUp} className="flex flex-wrap gap-8 md:gap-12">
-          {[
-            { value: '46', label: 'Counties' },
-            { value: '4', label: 'Regions' },
-            { value: '18', label: 'Months' },
-            { value: '2', label: 'Sent Ones' },
-          ].map((s) => (
-            <div key={s.label}>
-              <div className="font-mono text-[#C4572B] text-2xl font-bold leading-none mb-1">{s.value}</div>
-              <div className="text-[#E8DCC8]/45 text-xs tracking-widest uppercase font-mono">{s.label}</div>
-            </div>
-          ))}
-        </motion.div>
+          <motion.h1
+            variants={fadeUp}
+            className="text-[#F5F0E8] font-bold text-4xl sm:text-5xl md:text-6xl lg:text-7xl tracking-tight leading-none mb-1"
+          >
+            {content.hero.headline}
+          </motion.h1>
+
+          <motion.div variants={fadeUp}>
+            <span className="font-display italic text-[#C4572B] text-5xl sm:text-6xl md:text-7xl lg:text-[6rem] leading-none block mb-6">
+              {content.hero.subheadline}
+            </span>
+          </motion.div>
+
+          <motion.p
+            variants={fadeUp}
+            className="text-[#E8DCC8] text-base md:text-lg max-w-[52ch] leading-relaxed mb-8 [text-shadow:0_1px_12px_rgba(10,26,16,0.6)]"
+          >
+            {content.hero.description}
+          </motion.p>
+
+          <motion.div variants={fadeUp} className="flex flex-wrap gap-3 items-center mb-12">
+            <a
+              href="#counties"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-[#C4572B] text-[#F5F0E8] rounded-full font-semibold text-sm transition-all duration-300 hover:scale-[1.03] active:scale-[0.98]"
+            >
+              {content.hero.cta_primary}
+              <ArrowRight weight="bold" size={14} />
+            </a>
+            <a
+              href="#the-mandate"
+              className="inline-flex items-center gap-2 px-6 py-3 border border-[#F5F0E8]/22 text-[#F5F0E8] rounded-full font-medium text-sm transition-all duration-300 hover:border-[#F5F0E8]/45 hover:-translate-y-px"
+            >
+              {content.hero.cta_secondary}
+            </a>
+          </motion.div>
+
+          <motion.div variants={fadeUp} className="flex flex-wrap gap-8 md:gap-12">
+            {[
+              { value: '46', label: 'Counties' },
+              { value: '4', label: 'Regions' },
+              { value: '18', label: 'Months' },
+              { value: '2', label: 'Sent Ones' },
+            ].map((s) => (
+              <div key={s.label}>
+                <div className="font-mono text-[#C4572B] text-2xl font-bold leading-none mb-1">{s.value}</div>
+                <div className="text-[#E8DCC8]/45 text-xs tracking-widest uppercase font-mono">{s.label}</div>
+              </div>
+            ))}
+          </motion.div>
+        </div>
+
+        {/* ── Right: County Progress Card ── */}
+        <HeroProgressCard />
       </motion.div>
     </section>
   )
