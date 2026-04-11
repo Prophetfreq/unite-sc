@@ -8,5 +8,10 @@ export const sanity = createClient({
 })
 
 export async function getSiteSettings() {
-  return sanity.fetch(`*[_id == "siteSettings"][0]`)
+  return sanity.fetch(`*[_id == "siteSettings"][0]{
+    ...,
+    logo{
+      asset->{url}
+    }
+  }`)
 }

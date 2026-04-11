@@ -1142,12 +1142,8 @@ export default function App() {
   useEffect(() => {
     getSiteSettings().then((data) => {
       if (data) {
-        // Build logo URL from Sanity image asset if present
-        const logoUrl = data.logo?.asset?._ref
-          ? `https://cdn.sanity.io/images/ubyv53ok/production/${
-              data.logo.asset._ref.replace('image-', '').replace(/-([a-z]+)$/, '.$1')
-            }`
-          : null
+        // Get logo URL directly from expanded Sanity asset
+        const logoUrl = data.logo?.asset?.url || null
 
         setSiteContent({
           brand: {
