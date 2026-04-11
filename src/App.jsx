@@ -136,31 +136,31 @@ function Navbar() {
 
   return (
     <motion.nav
-      className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 grid grid-cols-[auto_1fr_auto] items-center px-6 py-3.5 rounded-full transition-all duration-500 min-w-[520px] md:min-w-[700px] ${
+      className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 flex items-center md:grid md:grid-cols-[auto_1fr_auto] px-5 py-3 md:px-6 md:py-3.5 rounded-full transition-all duration-500 md:min-w-[680px] ${
         scrolled
           ? 'bg-[#F5F0E8]/90 backdrop-blur-xl border border-[#1C3A2A]/12 shadow-[0_4px_24px_-4px_rgba(28,58,42,0.12)]'
-          : 'bg-[#0A1A10]/30 backdrop-blur-sm border border-white/10'
+          : 'bg-[#0A1A10]/40 backdrop-blur-sm border border-white/10'
       }`}
       initial={{ y: -24, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.65, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
     >
       {/* Wordmark — left */}
-      <div className="flex items-center gap-1 pr-6">
-        <span className={`font-bold text-base tracking-[0.12em] transition-colors duration-400 ${
+      <div className="flex items-center gap-1 md:pr-6">
+        <span className={`font-bold text-sm md:text-base tracking-[0.12em] transition-colors duration-400 ${
           scrolled ? 'text-[#1C3A2A]' : 'text-[#F5F0E8]'
         }`}>
           UNITE
         </span>
-        <span className={`font-light text-sm tracking-[0.18em] transition-colors duration-400 ${
+        <span className={`font-light text-xs md:text-sm tracking-[0.18em] transition-colors duration-400 ${
           scrolled ? 'text-[#1C3A2A]/60' : 'text-[#F5F0E8]/55'
         }`}>
           SC
         </span>
-        <span className="text-[#C4572B] font-bold text-base ml-0.5">+</span>
+        <span className="text-[#C4572B] font-bold text-sm md:text-base ml-0.5">+</span>
       </div>
 
-      {/* Nav links — centered */}
+      {/* Nav links — centered, desktop only */}
       <div className="hidden md:flex items-center justify-center gap-7">
         {navLinks.map(({ label, href }) => (
           <a
@@ -175,16 +175,28 @@ function Navbar() {
         ))}
       </div>
 
-      {/* CTA — right */}
+      {/* CTA — right (desktop) */}
       <a
         href="#counties"
-        className={`ml-6 text-sm font-semibold px-5 py-2 rounded-full transition-all duration-300 hover:scale-[1.03] active:scale-[0.98] whitespace-nowrap ${
+        className={`hidden md:inline-flex ml-6 text-sm font-semibold px-5 py-2 rounded-full transition-all duration-300 hover:scale-[1.03] active:scale-[0.98] whitespace-nowrap ${
           scrolled
             ? 'bg-[#C4572B] text-[#F5F0E8]'
             : 'bg-[#F5F0E8]/12 border border-[#F5F0E8]/25 text-[#F5F0E8]'
         }`}
       >
         {nav.navCTALabel || 'View Counties'}
+      </a>
+
+      {/* Mobile CTA — compact */}
+      <a
+        href="#counties"
+        className={`md:hidden ml-4 text-xs font-semibold px-4 py-1.5 rounded-full transition-all duration-300 whitespace-nowrap ${
+          scrolled
+            ? 'bg-[#C4572B] text-[#F5F0E8]'
+            : 'bg-[#F5F0E8]/12 border border-[#F5F0E8]/25 text-[#F5F0E8]'
+        }`}
+      >
+        View
       </a>
     </motion.nav>
   )
