@@ -209,10 +209,11 @@ function Hero() {
         <div className="absolute inset-0 bg-[#0F2219]/35" />
       </div>
 
-      {/* Logo — absolutely centered in the open hero space */}
+      {/* Logo — centered horizontally, positioned in upper third of hero */}
       {brand.logoUrl && (
         <motion.div
-          className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none"
+          className="absolute top-0 left-0 right-0 flex justify-center z-10 pointer-events-none"
+          style={{ paddingTop: 'clamp(80px, 10vh, 140px)' }}
           initial={{ opacity: 0, scale: 0.92 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
