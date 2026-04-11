@@ -1370,6 +1370,7 @@ const TIERS = [
     amount: '$50',
     desc: 'Covers printing, county declaration materials, and communications for one county visit.',
     tag: 'Start here',
+    url: 'https://radianteternity.subspla.sh/mryqyjh',
   },
   {
     name: 'Road Partner',
@@ -1377,18 +1378,21 @@ const TIERS = [
     desc: 'Covers fuel and travel costs to reach one county — putting feet on the ground.',
     tag: 'Most popular',
     featured: true,
+    url: 'https://radianteternity.subspla.sh/7mpz4yy',
   },
   {
     name: 'County Sponsor',
     amount: '$185',
     desc: 'Fully sponsors one complete county visit — travel and overnight accommodation for Reuben & Grace.',
     tag: '46 counties × $185',
+    url: 'https://radianteternity.subspla.sh/vtjyyym',
   },
   {
     name: 'Region Anchor',
     amount: '$500',
     desc: 'Anchors an entire regional cluster of county visits — a significant investment in the statewide mandate.',
     tag: 'High impact',
+    url: 'https://radianteternity.subspla.sh/b2nfk3z',
   },
 ]
 
@@ -1492,7 +1496,7 @@ function SupportSection() {
 
                 {/* CTA */}
                 <a
-                  href={content.support.give_url}
+                  href={tier.url}
                   target="_blank"
                   rel="noopener noreferrer"
                   className={`mt-auto inline-flex items-center gap-2 px-5 py-2.5 rounded-full font-semibold text-xs self-start transition-all duration-300 hover:scale-[1.03] active:scale-[0.98] ${
@@ -1519,7 +1523,7 @@ function SupportSection() {
               <div className="text-[#E8DCC8]/45 text-xs mt-0.5">All gifts support travel, accommodation, and the costs of reaching every county.</div>
             </div>
             <a
-              href={content.support.give_url}
+              href="https://radianteternity.subspla.sh/tfrc3xv"
               target="_blank"
               rel="noopener noreferrer"
               className="flex-shrink-0 inline-flex items-center gap-2 px-6 py-3 bg-[#C4572B] text-[#F5F0E8] rounded-full font-semibold text-sm transition-all duration-300 hover:scale-[1.03] active:scale-[0.98]"
