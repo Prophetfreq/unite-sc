@@ -196,70 +196,84 @@ function Hero() {
 
   return (
     <section className="relative min-h-[100dvh] flex flex-col justify-end pb-16 md:pb-20 px-6 md:px-16 overflow-hidden">
+      {/* Background image — SC-appropriate landscape */}
       <div className="absolute inset-0 z-0">
         <img
-          src="https://picsum.photos/seed/forestpath46/1600/900"
+          src="https://images.unsplash.com/photo-1511497584788-876760111969?w=1800&q=85&fit=crop"
           alt=""
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover object-center"
           loading="eager"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0A1A10] via-[#1C3A2A]/88 to-[#1C3A2A]/40" />
-        <div className="absolute inset-0 bg-[#0F2219]/35" />
+        {/* Rich layered gradient: dark bottom for text, deep overlay overall */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#060F09] via-[#0F2219]/80 to-[#0F2219]/55" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#0A1A10]/60 via-transparent to-transparent" />
       </div>
 
-      {/* Cinematic Text Logo — upper third of hero */}
+      {/* Cinematic Text Logo — centered in upper 55% of hero, clears navbar */}
       <div
-        className="absolute top-0 left-0 right-0 flex flex-col items-center justify-center z-10 pointer-events-none"
-        style={{ height: '52%' }}
+        className="absolute left-0 right-0 flex flex-col items-center justify-center z-10 pointer-events-none"
+        style={{ top: '72px', height: 'calc(52% - 72px)' }}
       >
         {/* Top accent line */}
         <motion.div
-          className="h-px bg-white/20 mb-6"
+          className="h-px mb-7"
+          style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)' }}
           initial={{ width: 0 }}
-          animate={{ width: 'clamp(60px, 12vw, 140px)' }}
-          transition={{ duration: 0.9, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+          animate={{ width: 'clamp(80px, 16vw, 180px)' }}
+          transition={{ duration: 1.0, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
         />
 
         {/* Main logo text */}
-        <div className="flex items-center gap-3 md:gap-4">
-          {/* U N I T E — letter by letter */}
-          <div className="flex items-center" style={{ gap: '0.04em' }}>
+        <div className="flex items-baseline gap-3 md:gap-5">
+          {/* U N I T E — letter by letter stagger */}
+          <div className="flex items-baseline">
             {'UNITE'.split('').map((letter, i) => (
               <motion.span
                 key={i}
-                initial={{ opacity: 0, y: 36 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.55, delay: 0.2 + i * 0.07, ease: [0.16, 1, 0.3, 1] }}
+                initial={{ opacity: 0, y: 48, filter: 'blur(8px)' }}
+                animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                transition={{ duration: 0.6, delay: 0.15 + i * 0.08, ease: [0.16, 1, 0.3, 1] }}
                 className="text-white font-bold leading-none"
-                style={{ fontSize: 'clamp(2.8rem, 6vw, 6rem)', letterSpacing: '0.06em' }}
+                style={{ fontSize: 'clamp(3rem, 7vw, 7rem)', letterSpacing: '0.05em' }}
               >
                 {letter}
               </motion.span>
             ))}
           </div>
 
-          {/* SC — lighter weight */}
+          {/* Divider dot */}
           <motion.span
-            initial={{ opacity: 0, y: 36 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.55, delay: 0.57, ease: [0.16, 1, 0.3, 1] }}
-            className="text-white/55 font-light leading-none"
-            style={{ fontSize: 'clamp(1.8rem, 4vw, 4rem)', letterSpacing: '0.12em' }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.4, delay: 0.6 }}
+            className="text-white/20 font-thin leading-none self-center"
+            style={{ fontSize: 'clamp(1.5rem, 3vw, 3rem)' }}
+          >
+            ·
+          </motion.span>
+
+          {/* SC */}
+          <motion.span
+            initial={{ opacity: 0, y: 48, filter: 'blur(8px)' }}
+            animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+            transition={{ duration: 0.6, delay: 0.62, ease: [0.16, 1, 0.3, 1] }}
+            className="text-white/50 font-light leading-none"
+            style={{ fontSize: 'clamp(2rem, 4.5vw, 4.5rem)', letterSpacing: '0.18em' }}
           >
             SC
           </motion.span>
 
-          {/* + — accent with glow pulse */}
+          {/* + accent */}
           <motion.span
-            initial={{ opacity: 0, scale: 0.3, rotate: -45 }}
+            initial={{ opacity: 0, scale: 0.2, rotate: -90 }}
             animate={{ opacity: 1, scale: 1, rotate: 0 }}
-            transition={{ duration: 0.7, delay: 0.75, ease: [0.34, 1.56, 0.64, 1] }}
+            transition={{ duration: 0.8, delay: 0.82, ease: [0.34, 1.56, 0.64, 1] }}
             className="text-[#C4572B] font-bold leading-none"
             style={{
-              fontSize: 'clamp(2.4rem, 5vw, 5rem)',
-              textShadow: '0 0 40px rgba(196,87,43,0.9), 0 0 80px rgba(196,87,43,0.4)',
+              fontSize: 'clamp(2rem, 4vw, 4.5rem)',
+              textShadow: '0 0 30px rgba(196,87,43,1), 0 0 70px rgba(196,87,43,0.5)',
               animation: 'logoPulse 3s ease-in-out infinite',
-              animationDelay: '1.4s',
+              animationDelay: '1.6s',
             }}
           >
             +
@@ -268,21 +282,22 @@ function Hero() {
 
         {/* Tagline */}
         <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1, delay: 1.1 }}
-          className="font-mono text-white/35 tracking-[0.3em] uppercase mt-4"
-          style={{ fontSize: 'clamp(0.55rem, 1vw, 0.75rem)' }}
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1.2, delay: 1.1 }}
+          className="font-mono text-white/30 uppercase mt-5 text-center"
+          style={{ fontSize: 'clamp(0.5rem, 1.1vw, 0.7rem)', letterSpacing: '0.35em' }}
         >
-          South Carolina · 46 Counties · One Mandate
+          South Carolina &nbsp;·&nbsp; 46 Counties &nbsp;·&nbsp; One Mandate
         </motion.p>
 
         {/* Bottom accent line */}
         <motion.div
-          className="h-px bg-white/20 mt-6"
+          className="h-px mt-7"
+          style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent)' }}
           initial={{ width: 0 }}
-          animate={{ width: 'clamp(60px, 12vw, 140px)' }}
-          transition={{ duration: 0.9, delay: 1.0, ease: [0.16, 1, 0.3, 1] }}
+          animate={{ width: 'clamp(80px, 16vw, 180px)' }}
+          transition={{ duration: 1.0, delay: 1.05, ease: [0.16, 1, 0.3, 1] }}
         />
       </div>
 
