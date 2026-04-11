@@ -531,15 +531,15 @@ function IntroSection() {
         >
           {/* Glowing circle behind map */}
           <div
-            className="absolute w-[340px] h-[340px] md:w-[420px] md:h-[420px] rounded-full"
+            className="absolute w-[360px] h-[360px] md:w-[460px] md:h-[460px] rounded-full"
             style={{
-              background: 'radial-gradient(ellipse at center, rgba(44,64,54,0.5) 0%, rgba(6,15,9,0) 70%)',
-              boxShadow: '0 0 80px 20px rgba(74,122,98,0.12)',
+              background: 'radial-gradient(ellipse at center, rgba(44,90,64,0.35) 0%, rgba(6,15,9,0) 72%)',
+              boxShadow: '0 0 100px 30px rgba(74,140,104,0.18)',
             }}
           />
 
           {/* SC Map */}
-          <div className="relative w-[320px] h-[220px] md:w-[420px] md:h-[290px]">
+          <div className="relative w-[320px] h-[240px] md:w-[420px] md:h-[310px]">
             <ComposableMap
               projection="geoAlbersUsa"
               projectionConfig={{ scale: 5800, center: [-80.9, 33.7] }}
@@ -552,17 +552,24 @@ function IntroSection() {
                     .map(geo => {
                       const name = FIPS_TO_COUNTY[geo.id]
                       const region = getRegionForCounty(name)
-                      const baseColor = REGION_COLORS[region] || '#2E4036'
+                      // Bright, legible colors for each region
+                      const BRIGHT_COLORS = {
+                        Midlands:    '#4A8C68',
+                        Lowcountry:  '#6BAE88',
+                        'Pee Dee':   '#C4A46B',
+                        Upstate:     '#D4703A',
+                      }
+                      const fill = BRIGHT_COLORS[region] || '#4A8C68'
                       return (
                         <Geography
                           key={geo.rsmKey}
                           geography={geo}
-                          fill={baseColor}
+                          fill={fill}
                           stroke="#060F09"
-                          strokeWidth={1.2}
+                          strokeWidth={1.5}
                           style={{
-                            default: { outline: 'none', opacity: 0.85 },
-                            hover:   { outline: 'none', opacity: 1, fill: '#C4572B' },
+                            default: { outline: 'none' },
+                            hover:   { outline: 'none', fill: '#E8DCC8' },
                             pressed: { outline: 'none' },
                           }}
                         />
@@ -572,12 +579,17 @@ function IntroSection() {
               </Geographies>
             </ComposableMap>
 
-            {/* Map region legend */}
-            <div className="absolute bottom-0 left-0 right-0 flex justify-center gap-3 flex-wrap">
-              {Object.entries(REGION_COLORS).map(([region, color]) => (
-                <div key={region} className="flex items-center gap-1">
-                  <div className="w-2 h-2 rounded-full" style={{ background: color }} />
-                  <span className="font-mono text-[#E8DCC8]/40 text-[0.5rem] tracking-wider">{region}</span>
+            {/* Region legend */}
+            <div className="absolute -bottom-6 left-0 right-0 flex justify-center gap-4 flex-wrap">
+              {[
+                { label: 'Upstate',    color: '#D4703A' },
+                { label: 'Midlands',   color: '#4A8C68' },
+                { label: 'Lowcountry', color: '#6BAE88' },
+                { label: 'Pee Dee',    color: '#C4A46B' },
+              ].map(({ label, color }) => (
+                <div key={label} className="flex items-center gap-1">
+                  <div className="w-1.5 h-1.5 rounded-full" style={{ background: color }} />
+                  <span className="font-mono text-[#E8DCC8]/45 text-[0.5rem] tracking-wider">{label}</span>
                 </div>
               ))}
             </div>
