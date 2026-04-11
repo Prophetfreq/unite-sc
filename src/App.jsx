@@ -332,12 +332,9 @@ function HeroProgressCard() {
 // ─── Hero ─────────────────────────────────────────────────────────────────────
 
 function Hero() {
-  const content = useContent()
-  const brand = useBrand()
-
   return (
-    <section className="relative min-h-[100dvh] flex flex-col justify-end pb-16 md:pb-20 px-6 md:px-16 overflow-hidden">
-      {/* Background image — SC-appropriate landscape */}
+    <section className="relative h-[100dvh] flex items-center justify-center overflow-hidden">
+      {/* Background image */}
       <div className="absolute inset-0 z-0">
         <img
           src="https://images.unsplash.com/photo-1511497584788-876760111969?w=1800&q=85&fit=crop"
@@ -345,28 +342,24 @@ function Hero() {
           className="w-full h-full object-cover object-center"
           loading="eager"
         />
-        {/* Rich layered gradient: dark bottom for text, deep overlay overall */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#060F09] via-[#0F2219]/80 to-[#0F2219]/55" />
-        <div className="absolute inset-0 bg-gradient-to-br from-[#0A1A10]/60 via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#060F09] via-[#0F2219]/75 to-[#0F2219]/50" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#0A1A10]/50 via-transparent to-transparent" />
       </div>
 
-      {/* Cinematic Text Logo — centered in upper 55% of hero, clears navbar */}
-      <div
-        className="absolute left-0 right-0 flex flex-col items-center justify-center z-10 pointer-events-none"
-        style={{ top: '72px', height: 'calc(52% - 72px)' }}
-      >
+      {/* Cinematic Logo — perfectly centered */}
+      <div className="relative z-10 flex flex-col items-center justify-center">
         {/* Top accent line */}
         <motion.div
-          className="h-px mb-7"
+          className="h-px mb-8"
           style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)' }}
           initial={{ width: 0 }}
-          animate={{ width: 'clamp(80px, 16vw, 180px)' }}
+          animate={{ width: 'clamp(80px, 16vw, 200px)' }}
           transition={{ duration: 1.0, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
         />
 
-        {/* Main logo text */}
+        {/* UNITE · SC + */}
         <div className="flex items-baseline gap-3 md:gap-5">
-          {/* U N I T E — letter by letter stagger */}
+          {/* U N I T E */}
           <div className="flex items-baseline">
             {'UNITE'.split('').map((letter, i) => (
               <motion.span
@@ -375,20 +368,20 @@ function Hero() {
                 animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
                 transition={{ duration: 0.6, delay: 0.15 + i * 0.08, ease: [0.16, 1, 0.3, 1] }}
                 className="text-white font-bold leading-none"
-                style={{ fontSize: 'clamp(3rem, 7vw, 7rem)', letterSpacing: '0.05em' }}
+                style={{ fontSize: 'clamp(3.5rem, 8vw, 9rem)', letterSpacing: '0.05em' }}
               >
                 {letter}
               </motion.span>
             ))}
           </div>
 
-          {/* Divider dot */}
+          {/* · divider */}
           <motion.span
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.4, delay: 0.6 }}
             className="text-white/20 font-thin leading-none self-center"
-            style={{ fontSize: 'clamp(1.5rem, 3vw, 3rem)' }}
+            style={{ fontSize: 'clamp(1.5rem, 3vw, 3.5rem)' }}
           >
             ·
           </motion.span>
@@ -399,19 +392,19 @@ function Hero() {
             animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
             transition={{ duration: 0.6, delay: 0.62, ease: [0.16, 1, 0.3, 1] }}
             className="text-white/50 font-light leading-none"
-            style={{ fontSize: 'clamp(2.8rem, 6vw, 6.5rem)', letterSpacing: '0.18em' }}
+            style={{ fontSize: 'clamp(3rem, 6.5vw, 7.5rem)', letterSpacing: '0.18em' }}
           >
             SC
           </motion.span>
 
-          {/* + accent */}
+          {/* + */}
           <motion.span
             initial={{ opacity: 0, scale: 0.2, rotate: -90 }}
             animate={{ opacity: 1, scale: 1, rotate: 0 }}
             transition={{ duration: 0.8, delay: 0.82, ease: [0.34, 1.56, 0.64, 1] }}
             className="text-[#C4572B] font-bold leading-none"
             style={{
-              fontSize: 'clamp(2.8rem, 5.5vw, 6rem)',
+              fontSize: 'clamp(3rem, 6vw, 7rem)',
               textShadow: '0 0 30px rgba(196,87,43,1), 0 0 70px rgba(196,87,43,0.5)',
               animation: 'logoPulse 3s ease-in-out infinite',
               animationDelay: '1.6s',
@@ -426,33 +419,62 @@ function Hero() {
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1.2, delay: 1.1 }}
-          className="font-mono text-white/30 uppercase mt-5 text-center"
-          style={{ fontSize: 'clamp(0.5rem, 1.1vw, 0.7rem)', letterSpacing: '0.35em' }}
+          className="font-mono text-white/30 uppercase mt-6 text-center"
+          style={{ fontSize: 'clamp(0.55rem, 1.2vw, 0.75rem)', letterSpacing: '0.35em' }}
         >
           South Carolina &nbsp;·&nbsp; 46 Counties &nbsp;·&nbsp; One Mandate
         </motion.p>
 
         {/* Bottom accent line */}
         <motion.div
-          className="h-px mt-7"
+          className="h-px mt-8"
           style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent)' }}
           initial={{ width: 0 }}
-          animate={{ width: 'clamp(80px, 16vw, 180px)' }}
+          animate={{ width: 'clamp(80px, 16vw, 200px)' }}
           transition={{ duration: 1.0, delay: 1.05, ease: [0.16, 1, 0.3, 1] }}
         />
-      </div>
 
+        {/* Scroll cue */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.8, duration: 1 }}
+          className="mt-16 flex flex-col items-center gap-2"
+        >
+          <motion.div
+            animate={{ y: [0, 6, 0] }}
+            transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
+            className="w-px h-10 bg-gradient-to-b from-white/0 via-white/30 to-white/0"
+          />
+        </motion.div>
+      </div>
+    </section>
+  )
+}
+
+// ─── Intro Section (County by county + Stats + Progress) ──────────────────────
+
+function IntroSection() {
+  const content = useContent()
+  const ref = useRef(null)
+  const inView = useInView(ref, { once: true, margin: '-80px' })
+
+  return (
+    <section
+      ref={ref}
+      className="bg-[#060F09] py-24 md:py-32 px-6 md:px-16"
+    >
       <motion.div
-        className="relative z-10 max-w-[1400px] mx-auto w-full grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-8 lg:gap-16 items-end"
+        className="max-w-[1400px] mx-auto grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-12 lg:gap-20 items-start"
         variants={stagger}
         initial="hidden"
-        animate="visible"
+        animate={inView ? 'visible' : 'hidden'}
       >
-        {/* ── Left: existing hero content ── */}
+        {/* Left — headline, description, CTAs, stats */}
         <div>
           <motion.p
             variants={fadeUp}
-            className="font-mono text-[#E8DCC8]/80 text-xs tracking-widest uppercase mb-5"
+            className="font-mono text-[#4A7A62] text-xs tracking-widest uppercase mb-6"
           >
             Reuben & Grace Kora — A Prophetic Mandate — 2026
           </motion.p>
@@ -465,19 +487,19 @@ function Hero() {
           </motion.h1>
 
           <motion.div variants={fadeUp}>
-            <span className="font-display italic text-[#C4572B] text-5xl sm:text-6xl md:text-7xl lg:text-[6rem] leading-none block mb-6">
+            <span className="font-display italic text-[#C4572B] text-5xl sm:text-6xl md:text-7xl lg:text-[6rem] leading-none block mb-8">
               {content.hero.subheadline}
             </span>
           </motion.div>
 
           <motion.p
             variants={fadeUp}
-            className="text-[#E8DCC8] text-base md:text-lg max-w-[52ch] leading-relaxed mb-8 [text-shadow:0_1px_12px_rgba(10,26,16,0.6)]"
+            className="text-[#E8DCC8]/70 text-base md:text-lg max-w-[52ch] leading-relaxed mb-10"
           >
             {content.hero.description}
           </motion.p>
 
-          <motion.div variants={fadeUp} className="flex flex-wrap gap-3 items-center mb-12">
+          <motion.div variants={fadeUp} className="flex flex-wrap gap-3 items-center mb-14">
             <a
               href="#counties"
               className="inline-flex items-center gap-2 px-6 py-3 bg-[#C4572B] text-[#F5F0E8] rounded-full font-semibold text-sm transition-all duration-300 hover:scale-[1.03] active:scale-[0.98]"
@@ -487,29 +509,31 @@ function Hero() {
             </a>
             <a
               href="#the-mandate"
-              className="inline-flex items-center gap-2 px-6 py-3 border border-[#F5F0E8]/22 text-[#F5F0E8] rounded-full font-medium text-sm transition-all duration-300 hover:border-[#F5F0E8]/45 hover:-translate-y-px"
+              className="inline-flex items-center gap-2 px-6 py-3 border border-[#F5F0E8]/18 text-[#F5F0E8] rounded-full font-medium text-sm transition-all duration-300 hover:border-[#F5F0E8]/40 hover:-translate-y-px"
             >
               {content.hero.cta_secondary}
             </a>
           </motion.div>
 
-          <motion.div variants={fadeUp} className="flex flex-wrap gap-8 md:gap-12">
+          <motion.div variants={fadeUp} className="flex flex-wrap gap-10 md:gap-16">
             {[
               { value: '46', label: 'Counties' },
-              { value: '4', label: 'Regions' },
+              { value: '4',  label: 'Regions' },
               { value: '18', label: 'Months' },
-              { value: '2', label: 'Sent Ones' },
+              { value: '2',  label: 'Sent Ones' },
             ].map((s) => (
               <div key={s.label}>
-                <div className="font-mono text-[#C4572B] text-2xl font-bold leading-none mb-1">{s.value}</div>
-                <div className="text-[#E8DCC8]/45 text-xs tracking-widest uppercase font-mono">{s.label}</div>
+                <div className="font-mono text-[#C4572B] text-3xl font-bold leading-none mb-1">{s.value}</div>
+                <div className="text-[#E8DCC8]/40 text-xs tracking-widest uppercase font-mono">{s.label}</div>
               </div>
             ))}
           </motion.div>
         </div>
 
-        {/* ── Right: County Progress Card ── */}
-        <HeroProgressCard />
+        {/* Right — County Progress Card */}
+        <motion.div variants={fadeUp}>
+          <HeroProgressCard />
+        </motion.div>
       </motion.div>
     </section>
   )
@@ -1458,6 +1482,7 @@ export default function App() {
         <Navbar />
         <main>
           <Hero />
+          <IntroSection />
           <MandateSection />
           <CountyTracker />
           <SentinelSection />
