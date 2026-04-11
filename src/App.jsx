@@ -5,6 +5,7 @@ import { ComposableMap, Geographies, Geography } from 'react-simple-maps'
 import contentFallback from './content.json'
 import { getSiteSettings, getBrandSettings } from './sanityClient'
 import { supabase } from './supabase.js'
+import { WebGLShader } from './components/ui/web-gl-shader.jsx'
 
 // ─── Data ────────────────────────────────────────────────────────────────────
 
@@ -334,16 +335,18 @@ function HeroProgressCard() {
 function Hero() {
   return (
     <section className="relative h-[100dvh] flex items-center justify-center overflow-hidden">
-      {/* Background image */}
+      {/* WebGL Shader Background */}
       <div className="absolute inset-0 z-0">
-        <img
-          src="https://images.unsplash.com/photo-1511497584788-876760111969?w=1800&q=85&fit=crop"
-          alt=""
-          className="w-full h-full object-cover object-center"
-          loading="eager"
+        <WebGLShader
+          xScale={1.2}
+          yScale={0.38}
+          distortion={0.045}
+          speed={0.007}
+          className="absolute inset-0 w-full h-full"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#060F09] via-[#0F2219]/75 to-[#0F2219]/50" />
-        <div className="absolute inset-0 bg-gradient-to-br from-[#0A1A10]/50 via-transparent to-transparent" />
+        {/* Vignette + gradient overlay to keep logo legible */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#060F09]/80 via-transparent to-[#060F09]/40" />
+        <div className="absolute inset-0 bg-radial-[ellipse_at_center] from-transparent via-transparent to-[#060F09]/60" />
       </div>
 
       {/* Cinematic Logo — perfectly centered */}
