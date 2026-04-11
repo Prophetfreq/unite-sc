@@ -149,7 +149,7 @@ function Navbar() {
         <img
           src={brand.logoUrl}
           alt={brand.brandName || 'Unite SC'}
-          className="h-10 w-auto object-contain"
+          className="w-auto object-contain" style={{ height: '200px' }}
           style={{ filter: scrolled ? 'none' : 'brightness(0) invert(1)' }}
         />
       ) : (
@@ -221,7 +221,8 @@ function Hero() {
             <img
               src={brand.logoUrl}
               alt={brand.brandName || 'Unite SC'}
-              className="h-28 md:h-40 w-auto object-contain drop-shadow-lg"
+              className="w-auto object-contain drop-shadow-lg"
+              style={{ height: 'clamp(250px, 20vw, 400px)' }}
             />
           </motion.div>
         )}
