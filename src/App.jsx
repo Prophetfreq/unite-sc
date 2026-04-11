@@ -453,6 +453,103 @@ function Hero() {
   )
 }
 
+// ─── Animated SC Map ──────────────────────────────────────────────────────────
+
+const BRIGHT_COLORS = {
+  Midlands:    '#4A8C68',
+  Lowcountry:  '#6BAE88',
+  'Pee Dee':   '#C4A46B',
+  Upstate:     '#D4703A',
+}
+
+// All 46 SC county names for the random pulse
+const ALL_COUNTIES = Object.values(FIPS_TO_COUNTY)
+
+function AnimatedSCMap() {
+  // Set of currently "lit" counties
+  const [lit, setLit] = useState(new Set())
+
+  useEffect(() => {
+    // Every 600ms, randomly light up 1-2 counties and extinguish others
+    const interval = setInterval(() => {
+      setLit(prev => {
+        const next = new Set(prev)
+
+        // Extinguish 1-3 random lit counties
+        const litArr = [...next]
+        const toOff = litArr.slice(0, Math.ceil(Math.random() * 3))
+        toOff.forEach(c => next.delete(c))
+
+        // Light up 1-2 random new counties
+        const count = Math.random() > 0.4 ? 2 : 1
+        for (let i = 0; i < count; i++) {
+          const pick = ALL_COUNTIES[Math.floor(Math.random() * ALL_COUNTIES.length)]
+          next.add(pick)
+        }
+
+        return next
+      })
+    }, 550)
+
+    return () => clearInterval(interval)
+  }, [])
+
+  return (
+    <div className="relative w-full max-w-[420px]">
+      <ComposableMap
+        projection="geoMercator"
+        projectionConfig={{ scale: 6200, center: [-80.9, 33.7] }}
+        width={800}
+        height={460}
+        style={{ width: '100%', height: 'auto' }}
+      >
+        <Geographies geography={GEO_URL}>
+          {({ geographies }) =>
+            geographies
+              .filter(geo => geo.id.startsWith('45'))
+              .map(geo => {
+                const name = FIPS_TO_COUNTY[geo.id]
+                if (!name) return null
+                const region = getRegionForCounty(name)
+                const base = BRIGHT_COLORS[region] || '#4A8C68'
+                const isLit = lit.has(name)
+
+                return (
+                  <Geography
+                    key={geo.rsmKey}
+                    geography={geo}
+                    fill={isLit ? '#F5F0E8' : base}
+                    stroke="#060F09"
+                    strokeWidth={2}
+                    style={{
+                      default: {
+                        outline: 'none',
+                        transition: 'fill 0.4s ease',
+                        filter: isLit ? 'drop-shadow(0 0 6px rgba(245,240,232,0.8))' : 'none',
+                      },
+                      hover:   { outline: 'none', fill: '#C4572B' },
+                      pressed: { outline: 'none' },
+                    }}
+                  />
+                )
+              })
+          }
+        </Geographies>
+      </ComposableMap>
+
+      {/* Region legend */}
+      <div className="flex justify-center gap-4 flex-wrap mt-1">
+        {Object.entries(BRIGHT_COLORS).map(([label, color]) => (
+          <div key={label} className="flex items-center gap-1">
+            <div className="w-1.5 h-1.5 rounded-full" style={{ background: color }} />
+            <span className="font-mono text-[#E8DCC8]/45 text-[0.55rem] tracking-wider">{label}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 // ─── Intro Section — 3-column minimalist layout ───────────────────────────────
 
 function IntroSection() {
@@ -536,63 +633,8 @@ function IntroSection() {
             }}
           />
 
-          {/* SC Map */}
-          <div className="relative w-full max-w-[420px]">
-            <ComposableMap
-              projection="geoMercator"
-              projectionConfig={{ scale: 6200, center: [-80.9, 33.7] }}
-              width={800}
-              height={460}
-              style={{ width: '100%', height: 'auto' }}
-            >
-              <Geographies geography={GEO_URL}>
-                {({ geographies }) =>
-                  geographies
-                    .filter(geo => geo.id.startsWith('45'))
-                    .map(geo => {
-                      const name = FIPS_TO_COUNTY[geo.id]
-                      if (!name) return null
-                      const region = getRegionForCounty(name)
-                      const BRIGHT_COLORS = {
-                        Midlands:    '#4A8C68',
-                        Lowcountry:  '#6BAE88',
-                        'Pee Dee':   '#C4A46B',
-                        Upstate:     '#D4703A',
-                      }
-                      return (
-                        <Geography
-                          key={geo.rsmKey}
-                          geography={geo}
-                          fill={BRIGHT_COLORS[region] || '#4A8C68'}
-                          stroke="#060F09"
-                          strokeWidth={2}
-                          style={{
-                            default: { outline: 'none' },
-                            hover:   { outline: 'none', fill: '#E8DCC8' },
-                            pressed: { outline: 'none' },
-                          }}
-                        />
-                      )
-                    })
-                }
-              </Geographies>
-            </ComposableMap>
-
-            {/* Region legend */}
-            <div className="flex justify-center gap-4 flex-wrap mt-2">
-              {[
-                { label: 'Upstate',    color: '#D4703A' },
-                { label: 'Midlands',   color: '#4A8C68' },
-                { label: 'Lowcountry', color: '#6BAE88' },
-                { label: 'Pee Dee',    color: '#C4A46B' },
-              ].map(({ label, color }) => (
-                <div key={label} className="flex items-center gap-1">
-                  <div className="w-1.5 h-1.5 rounded-full" style={{ background: color }} />
-                  <span className="font-mono text-[#E8DCC8]/45 text-[0.55rem] tracking-wider">{label}</span>
-                </div>
-              ))}
-            </div>
-          </div>
+          {/* SC Map — animated */}
+          <AnimatedSCMap />
         </motion.div>
 
         {/* ── RIGHT: Big headline ── */}
