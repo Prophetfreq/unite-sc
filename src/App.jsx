@@ -194,6 +194,8 @@ function Navbar() {
 
 function Hero() {
   const content = useContent()
+  const brand = content.brand || {}
+
   return (
     <section className="relative min-h-[100dvh] flex flex-col justify-end pb-16 md:pb-20 px-6 md:px-16 overflow-hidden">
       <div className="absolute inset-0 z-0">
@@ -213,6 +215,18 @@ function Hero() {
         initial="hidden"
         animate="visible"
       >
+        {/* Logo in hero — shown above eyebrow text */}
+        {brand.logoUrl && (
+          <motion.div variants={fadeUp} className="mb-8">
+            <img
+              src={brand.logoUrl}
+              alt={brand.brandName || 'Unite SC'}
+              className="h-14 md:h-20 w-auto object-contain"
+              style={{ filter: 'brightness(0) invert(1)' }}
+            />
+          </motion.div>
+        )}
+
         <motion.p
           variants={fadeUp}
           className="font-mono text-[#E8DCC8]/80 text-xs tracking-widest uppercase mb-5"
