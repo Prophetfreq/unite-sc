@@ -150,7 +150,7 @@ function Navbar() {
           src={brand.logoUrl}
           alt={brand.brandName || 'Unite SC'}
           className="object-contain"
-          style={{ height: 'auto', width: 'clamp(36px, 4vw, 56px)', filter: scrolled ? 'none' : 'brightness(0) invert(1)' }}
+          style={{ height: 'auto', width: 'clamp(56px, 7vw, 80px)', filter: scrolled ? 'none' : 'brightness(0) invert(1)' }}
         />
       ) : (
         <span
@@ -222,7 +222,7 @@ function Hero() {
               src={brand.logoUrl}
               alt={brand.brandName || 'Unite SC'}
               className="object-contain drop-shadow-lg"
-              style={{ height: 'auto', width: 'clamp(80px, 12vw, 160px)' }}
+              style={{ height: 'auto', width: 'clamp(140px, 16vw, 220px)' }}
             />
           </motion.div>
         )}
