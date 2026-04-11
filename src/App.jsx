@@ -455,88 +455,173 @@ function Hero() {
   )
 }
 
-// ─── Intro Section (County by county + Stats + Progress) ──────────────────────
+// ─── Intro Section — 3-column minimalist layout ───────────────────────────────
 
 function IntroSection() {
   const content = useContent()
   const ref = useRef(null)
-  const inView = useInView(ref, { once: true, margin: '-80px' })
+  const inView = useInView(ref, { once: true, margin: '-60px' })
 
   return (
     <section
       ref={ref}
-      className="bg-[#060F09] py-24 md:py-32 px-6 md:px-16"
+      className="bg-[#060F09] min-h-screen flex flex-col justify-between py-12 md:py-16 px-6 md:px-12 overflow-hidden"
     >
-      <motion.div
-        className="max-w-[1400px] mx-auto grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-12 lg:gap-20 items-start"
-        variants={stagger}
-        initial="hidden"
-        animate={inView ? 'visible' : 'hidden'}
+      {/* Eyebrow */}
+      <motion.p
+        initial={{ opacity: 0, y: 12 }}
+        animate={inView ? { opacity: 1, y: 0 } : {}}
+        transition={{ duration: 0.6 }}
+        className="font-mono text-[#4A7A62] text-[0.6rem] tracking-[0.3em] uppercase text-center"
       >
-        {/* Left — headline, description, CTAs, stats */}
-        <div>
-          <motion.p
-            variants={fadeUp}
-            className="font-mono text-[#4A7A62] text-xs tracking-widest uppercase mb-6"
-          >
-            Reuben & Grace Kora — A Prophetic Mandate — 2026
-          </motion.p>
+        Reuben & Grace Kora &nbsp;·&nbsp; A Prophetic Mandate &nbsp;·&nbsp; 2026
+      </motion.p>
 
-          <motion.h1
-            variants={fadeUp}
-            className="text-[#F5F0E8] font-bold text-4xl sm:text-5xl md:text-6xl lg:text-7xl tracking-tight leading-none mb-1"
-          >
-            {content.hero.headline}
-          </motion.h1>
+      {/* 3-column main grid */}
+      <div className="flex-1 grid grid-cols-1 lg:grid-cols-[1fr_1.1fr_1fr] gap-8 lg:gap-4 items-center max-w-[1400px] mx-auto w-full py-8">
 
-          <motion.div variants={fadeUp}>
-            <span className="font-display italic text-[#C4572B] text-5xl sm:text-6xl md:text-7xl lg:text-[6rem] leading-none block mb-8">
-              {content.hero.subheadline}
-            </span>
-          </motion.div>
-
-          <motion.p
-            variants={fadeUp}
-            className="text-[#E8DCC8]/70 text-base md:text-lg max-w-[52ch] leading-relaxed mb-10"
-          >
+        {/* ── LEFT: description + CTAs + stats ── */}
+        <motion.div
+          initial={{ opacity: 0, x: -24 }}
+          animate={inView ? { opacity: 1, x: 0 } : {}}
+          transition={{ duration: 0.7, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+          className="flex flex-col gap-6 lg:pr-8"
+        >
+          <p className="text-[#E8DCC8]/70 text-sm md:text-base leading-relaxed max-w-[38ch]">
             {content.hero.description}
-          </motion.p>
+          </p>
 
-          <motion.div variants={fadeUp} className="flex flex-wrap gap-3 items-center mb-14">
+          <div className="flex flex-col sm:flex-row lg:flex-col gap-3">
             <a
               href="#counties"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-[#C4572B] text-[#F5F0E8] rounded-full font-semibold text-sm transition-all duration-300 hover:scale-[1.03] active:scale-[0.98]"
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#C4572B] text-[#F5F0E8] rounded-full font-semibold text-xs transition-all duration-300 hover:scale-[1.03] active:scale-[0.98] w-fit"
             >
               {content.hero.cta_primary}
-              <ArrowRight weight="bold" size={14} />
+              <ArrowRight weight="bold" size={12} />
             </a>
             <a
               href="#the-mandate"
-              className="inline-flex items-center gap-2 px-6 py-3 border border-[#F5F0E8]/18 text-[#F5F0E8] rounded-full font-medium text-sm transition-all duration-300 hover:border-[#F5F0E8]/40 hover:-translate-y-px"
+              className="inline-flex items-center gap-2 px-5 py-2.5 border border-[#F5F0E8]/15 text-[#F5F0E8]/70 rounded-full font-medium text-xs transition-all duration-300 hover:border-[#F5F0E8]/35 hover:text-[#F5F0E8] w-fit"
             >
               {content.hero.cta_secondary}
             </a>
-          </motion.div>
+          </div>
 
-          <motion.div variants={fadeUp} className="flex flex-wrap gap-10 md:gap-16">
+          <div className="grid grid-cols-2 gap-4 pt-2">
             {[
               { value: '46', label: 'Counties' },
               { value: '4',  label: 'Regions' },
               { value: '18', label: 'Months' },
               { value: '2',  label: 'Sent Ones' },
             ].map((s) => (
-              <div key={s.label}>
-                <div className="font-mono text-[#C4572B] text-3xl font-bold leading-none mb-1">{s.value}</div>
-                <div className="text-[#E8DCC8]/40 text-xs tracking-widest uppercase font-mono">{s.label}</div>
+              <div key={s.label} className="border border-[#1C3A2A]/60 rounded-2xl p-4">
+                <div className="font-mono text-[#C4572B] text-2xl font-bold leading-none mb-1">{s.value}</div>
+                <div className="text-[#E8DCC8]/40 text-[0.6rem] tracking-widest uppercase font-mono">{s.label}</div>
               </div>
             ))}
-          </motion.div>
-        </div>
-
-        {/* Right — County Progress Card */}
-        <motion.div variants={fadeUp}>
-          <HeroProgressCard />
+          </div>
         </motion.div>
+
+        {/* ── CENTER: SC Map ── */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.88 }}
+          animate={inView ? { opacity: 1, scale: 1 } : {}}
+          transition={{ duration: 1.0, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+          className="flex items-center justify-center relative order-first lg:order-none"
+        >
+          {/* Glowing circle behind map */}
+          <div
+            className="absolute w-[340px] h-[340px] md:w-[420px] md:h-[420px] rounded-full"
+            style={{
+              background: 'radial-gradient(ellipse at center, rgba(44,64,54,0.5) 0%, rgba(6,15,9,0) 70%)',
+              boxShadow: '0 0 80px 20px rgba(74,122,98,0.12)',
+            }}
+          />
+
+          {/* SC Map */}
+          <div className="relative w-[320px] h-[220px] md:w-[420px] md:h-[290px]">
+            <ComposableMap
+              projection="geoAlbersUsa"
+              projectionConfig={{ scale: 5800, center: [-80.9, 33.7] }}
+              style={{ width: '100%', height: '100%' }}
+            >
+              <Geographies geography={GEO_URL}>
+                {({ geographies }) =>
+                  geographies
+                    .filter(geo => geo.id.startsWith('45'))
+                    .map(geo => {
+                      const name = FIPS_TO_COUNTY[geo.id]
+                      const region = getRegionForCounty(name)
+                      const baseColor = REGION_COLORS[region] || '#2E4036'
+                      return (
+                        <Geography
+                          key={geo.rsmKey}
+                          geography={geo}
+                          fill={baseColor}
+                          stroke="#060F09"
+                          strokeWidth={1.2}
+                          style={{
+                            default: { outline: 'none', opacity: 0.85 },
+                            hover:   { outline: 'none', opacity: 1, fill: '#C4572B' },
+                            pressed: { outline: 'none' },
+                          }}
+                        />
+                      )
+                    })
+                }
+              </Geographies>
+            </ComposableMap>
+
+            {/* Map region legend */}
+            <div className="absolute bottom-0 left-0 right-0 flex justify-center gap-3 flex-wrap">
+              {Object.entries(REGION_COLORS).map(([region, color]) => (
+                <div key={region} className="flex items-center gap-1">
+                  <div className="w-2 h-2 rounded-full" style={{ background: color }} />
+                  <span className="font-mono text-[#E8DCC8]/40 text-[0.5rem] tracking-wider">{region}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </motion.div>
+
+        {/* ── RIGHT: Big headline ── */}
+        <motion.div
+          initial={{ opacity: 0, x: 24 }}
+          animate={inView ? { opacity: 1, x: 0 } : {}}
+          transition={{ duration: 0.7, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
+          className="flex items-center justify-center lg:justify-start lg:pl-4"
+        >
+          <h1
+            className="font-bold text-[#F5F0E8] leading-[0.9] tracking-tight text-center lg:text-left"
+            style={{ fontSize: 'clamp(3rem, 6vw, 6.5rem)' }}
+          >
+            {content.hero.headline}
+            <br />
+            <span
+              className="font-display italic text-[#C4572B] block"
+              style={{ fontSize: 'clamp(2.2rem, 4.5vw, 5rem)' }}
+            >
+              {content.hero.subheadline}
+            </span>
+          </h1>
+        </motion.div>
+      </div>
+
+      {/* Bottom strip */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={inView ? { opacity: 1 } : {}}
+        transition={{ duration: 0.8, delay: 0.8 }}
+        className="flex items-center justify-between max-w-[1400px] mx-auto w-full pt-4 border-t border-[#1C3A2A]/40"
+      >
+        <div className="flex items-center gap-2">
+          <span className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#4A7A62] opacity-75" />
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-[#4A7A62]" />
+          </span>
+          <span className="font-mono text-[#4A7A62] text-[0.6rem] tracking-wider">Mission active — 2026</span>
+        </div>
+        <span className="font-mono text-[#E8DCC8]/30 text-[0.6rem] tracking-wider">South Carolina, USA</span>
       </motion.div>
     </section>
   )
