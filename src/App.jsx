@@ -64,7 +64,7 @@ function getRegionForCounty(name) {
 
 // County visits are fetched live from Supabase — see CountyTracker component.
 
-const GATEKEEPER_TRAITS = [
+const DEFAULT_SENTINEL_TRAITS = [
   {
     label: 'Territorial authority',
     desc: 'When they pray, the county moves. People inside and outside their congregation respect the weight they carry.',
@@ -116,12 +116,22 @@ function NoiseOverlay() {
 
 function Navbar() {
   const [scrolled, setScrolled] = useState(false)
+  const content = useContent()
+  const nav = content.navigation || {}
+  const brand = content.brand || {}
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 72)
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
+
+  const navLinks = [
+    { label: nav.nav1Label || 'The Mandate',  href: '#the-mandate' },
+    { label: nav.nav2Label || 'Counties',      href: '#counties' },
+    { label: nav.nav3Label || 'The Sentinel',  href: '#the-sentinel' },
+    { label: nav.nav4Label || 'Support',       href: '#support' },
+  ]
 
   return (
     <motion.nav
@@ -134,23 +144,28 @@ function Navbar() {
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.65, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
     >
-      <span
-        className={`font-bold tracking-tight text-sm transition-colors duration-400 ${
-          scrolled ? 'text-[#1C3A2A]' : 'text-[#F5F0E8]'
-        }`}
-      >
-        Unite SC
-      </span>
+      {/* Logo or brand name */}
+      {brand.logoUrl ? (
+        <img
+          src={brand.logoUrl}
+          alt={brand.brandName || 'Unite SC'}
+          className="h-7 w-auto object-contain"
+          style={{ filter: scrolled ? 'none' : 'brightness(0) invert(1)' }}
+        />
+      ) : (
+        <span
+          className={`font-bold tracking-tight text-sm transition-colors duration-400 ${
+            scrolled ? 'text-[#1C3A2A]' : 'text-[#F5F0E8]'
+          }`}
+        >
+          {brand.brandName || 'Unite SC'}
+        </span>
+      )}
 
       <div className="hidden md:flex items-center gap-5">
-        {[
-          { label: 'The Mandate', href: '#the-mandate' },
-          { label: 'Counties', href: '#counties' },
-          { label: 'The Gatekeeper', href: '#the-gatekeeper' },
-          { label: 'Support', href: '#support' },
-        ].map(({ label, href }) => (
+        {navLinks.map(({ label, href }) => (
           <a
-            key={label}
+            key={href}
             href={href}
             className={`text-xs font-medium transition-all duration-300 hover:-translate-y-px ${
               scrolled ? 'text-[#6B6B5A] hover:text-[#1C3A2A]' : 'text-[#F5F0E8]/65 hover:text-[#F5F0E8]'
@@ -169,7 +184,7 @@ function Navbar() {
             : 'bg-[#F5F0E8]/12 border border-[#F5F0E8]/25 text-[#F5F0E8]'
         }`}
       >
-        View Counties
+        {nav.navCTALabel || 'View Counties'}
       </a>
     </motion.nav>
   )
@@ -676,15 +691,18 @@ function CountyTracker() {
   )
 }
 
-// ─── Gatekeeper ───────────────────────────────────────────────────────────────
+// ─── Sentinel ─────────────────────────────────────────────────────────────────
 
-function GatekeeperSection() {
+function SentinelSection() {
   const ref = useRef(null)
   const inView = useInView(ref, { once: true, margin: '-80px' })
+  const content = useContent()
+  const s = content.sentinel || {}
+  const traits = s.traits?.length ? s.traits : DEFAULT_SENTINEL_TRAITS
 
   return (
     <section
-      id="the-gatekeeper"
+      id="the-sentinel"
       ref={ref}
       className="bg-[#F5F0E8] py-24 px-6 md:px-16 border-t border-[#1C3A2A]/8"
     >
@@ -698,20 +716,18 @@ function GatekeeperSection() {
           {/* Sticky left */}
           <div className="md:sticky md:top-24">
             <motion.p variants={fadeUp} className="font-mono text-[#6B6B5A] text-xs tracking-widest uppercase mb-4">
-              Who You Are Looking For
+              {s.eyebrow || 'Who You Are Looking For'}
             </motion.p>
             <motion.h2
               variants={fadeUp}
               className="text-[#1A1A1A] font-bold text-3xl md:text-4xl tracking-tight leading-tight mb-5"
             >
-              Not the most famous.
+              {s.headline || 'Not the most famous.'}
               <br />
-              <span className="font-display italic text-[#2E5240]">The most faithful.</span>
+              <span className="font-display italic text-[#2E5240]">{s.headlineItalic || 'The most faithful.'}</span>
             </motion.h2>
             <motion.p variants={fadeUp} className="text-[#6B6B5A] text-sm leading-relaxed max-w-[38ch] mb-6">
-              In every county there is a person — a pastor, prophet, apostolic voice, or prayer leader —
-              who holds the spiritual gate of that area. They may not be well known outside their county.
-              But they are trusted across streams, and the territory responds when they move.
+              {s.body || 'In every county there is a person — a pastor, prophet, apostolic voice, or prayer leader — who holds the spiritual gate of that area. They may not be well known outside their county. But they are trusted across streams, and the territory responds when they move.'}
             </motion.p>
             <motion.div
               variants={fadeUp}
@@ -719,14 +735,14 @@ function GatekeeperSection() {
             >
               <div className="w-6 h-px bg-[#C4572B] mb-4" />
               <p className="font-display italic text-[#1C3A2A] text-lg leading-relaxed">
-                "Not the largest church. Not the biggest platform. The deepest root."
+                {s.pullQuote || '"Not the largest church. Not the biggest platform. The deepest root."'}
               </p>
             </motion.div>
           </div>
 
           {/* Trait list */}
           <motion.div variants={stagger} className="space-y-3">
-            {GATEKEEPER_TRAITS.map((trait, i) => (
+            {traits.map((trait, i) => (
               <motion.div
                 key={trait.label}
                 variants={fadeUp}
@@ -891,7 +907,7 @@ function Footer() {
             {[
               { label: 'The Mandate', href: '#the-mandate' },
               { label: 'Counties', href: '#counties' },
-              { label: 'The Gatekeeper', href: '#the-gatekeeper' },
+              { label: 'The Sentinel', href: '#the-sentinel' },
               { label: 'Prayer', href: '#prayer' },
               { label: 'Support', href: '#support' },
             ].map(({ label, href }) => (
@@ -1112,49 +1128,75 @@ export default function App() {
   useEffect(() => {
     getSiteSettings().then((data) => {
       if (data) {
-        // Map Sanity flat fields back to content.json shape
+        // Build logo URL from Sanity image asset if present
+        const logoUrl = data.logo?.asset?._ref
+          ? `https://cdn.sanity.io/images/ubyv53ok/production/${
+              data.logo.asset._ref.replace('image-', '').replace(/-([a-z]+)$/, '.$1')
+            }`
+          : null
+
         setSiteContent({
+          brand: {
+            logoUrl,
+            brandName: data.brandName,
+            brandTagline: data.brandTagline,
+          },
+          navigation: {
+            nav1Label:   data.nav1Label,
+            nav2Label:   data.nav2Label,
+            nav3Label:   data.nav3Label,
+            nav4Label:   data.nav4Label,
+            navCTALabel: data.navCTALabel,
+          },
           hero: {
-            headline: data.heroHeadline,
-            subheadline: data.heroSubheadline,
-            description: data.heroDescription,
-            cta_primary: data.heroCTAPrimary,
+            headline:      data.heroHeadline,
+            subheadline:   data.heroSubheadline,
+            description:   data.heroDescription,
+            cta_primary:   data.heroCTAPrimary,
             cta_secondary: data.heroCTASecondary,
           },
           mandate: {
-            eyebrow: data.mandateEyebrow,
-            headline: data.mandateHeadline,
-            headline_italic: data.mandateHeadlineItalic,
-            body: data.mandateBody,
-            pull_quote: data.mandatePullQuote,
-            pull_quote_ref: data.mandatePullQuoteRef,
-            sent_from_name: data.mandateSentFromName,
+            eyebrow:          data.mandateEyebrow,
+            headline:         data.mandateHeadline,
+            headline_italic:  data.mandateHeadlineItalic,
+            body:             data.mandateBody,
+            pull_quote:       data.mandatePullQuote,
+            pull_quote_ref:   data.mandatePullQuoteRef,
+            sent_from_name:   data.mandateSentFromName,
             sent_from_church: data.mandateSentFromChurch,
-            sent_from_org: data.mandateSentFromOrg,
-            sent_from_year: data.mandateSentFromYear,
-            model_heading: data.mandateModelHeading,
-            model_body: data.mandateModelBody,
-            contrasts: data.mandateContrasts || [],
+            sent_from_org:    data.mandateSentFromOrg,
+            sent_from_year:   data.mandateSentFromYear,
+            model_heading:    data.mandateModelHeading,
+            model_body:       data.mandateModelBody,
+            contrasts:        data.mandateContrasts || [],
           },
           prayer: {
-            eyebrow: data.prayerEyebrow,
-            headline: data.prayerHeadline,
-            headline_italic: data.prayerHeadlineItalic,
-            body: data.prayerBody,
+            eyebrow:              data.prayerEyebrow,
+            headline:             data.prayerHeadline,
+            headline_italic:      data.prayerHeadlineItalic,
+            body:                 data.prayerBody,
             intercession_heading: data.prayerIntercessionHeading,
-            intercession_body: data.prayerIntercessionBody,
-            prayer_items: data.prayerItems || [],
-            left_behind_items: data.prayerLeftBehind || [],
+            intercession_body:    data.prayerIntercessionBody,
+            prayer_items:         data.prayerItems || [],
+            left_behind_items:    data.prayerLeftBehind || [],
+          },
+          sentinel: {
+            eyebrow:       data.sentinelEyebrow,
+            headline:      data.sentinelHeadline,
+            headlineItalic: data.sentinelHeadlineItalic,
+            body:          data.sentinelBody,
+            pullQuote:     data.sentinelPullQuote,
+            traits:        data.sentinelTraits || [],
           },
           support: {
-            eyebrow: data.supportEyebrow,
-            headline: data.supportHeadline,
+            eyebrow:         data.supportEyebrow,
+            headline:        data.supportHeadline,
             headline_italic: data.supportHeadlineItalic,
-            body: data.supportBody,
-            give_url: data.supportGiveUrl,
+            body:            data.supportBody,
+            give_url:        data.supportGiveUrl,
           },
           footer: {
-            tagline: data.footerTagline,
+            tagline:       data.footerTagline,
             contact_email: data.footerContactEmail,
           },
           scriptures: data.scriptures || [],
@@ -1173,7 +1215,7 @@ export default function App() {
         <Hero />
         <MandateSection />
         <CountyTracker />
-        <GatekeeperSection />
+        <SentinelSection />
         <PrayerSection />
         <SupportSection />
       </main>
