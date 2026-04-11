@@ -15,3 +15,22 @@ export async function getSiteSettings() {
     }
   }`)
 }
+
+export async function getBrandSettings() {
+  const data = await sanity.fetch(`*[_id == "siteSettings"][0]{
+    brandName,
+    brandTagline,
+    logo{ asset->{ url } },
+    nav1Label, nav2Label, nav3Label, nav4Label, navCTALabel
+  }`)
+  return {
+    logoUrl: data?.logo?.asset?.url || null,
+    brandName: data?.brandName || 'Unite SC',
+    brandTagline: data?.brandTagline || null,
+    nav1Label: data?.nav1Label || null,
+    nav2Label: data?.nav2Label || null,
+    nav3Label: data?.nav3Label || null,
+    nav4Label: data?.nav4Label || null,
+    navCTALabel: data?.navCTALabel || null,
+  }
+}

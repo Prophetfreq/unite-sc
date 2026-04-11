@@ -3,7 +3,7 @@ import { motion, AnimatePresence, useInView } from 'framer-motion'
 import { ArrowRight, Circle, X } from '@phosphor-icons/react'
 import { ComposableMap, Geographies, Geography } from 'react-simple-maps'
 import contentFallback from './content.json'
-import { getSiteSettings } from './sanityClient'
+import { getSiteSettings, getBrandSettings } from './sanityClient'
 import { supabase } from './supabase.js'
 
 // ─── Data ────────────────────────────────────────────────────────────────────
@@ -118,7 +118,7 @@ function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const content = useContent()
   const nav = content.navigation || {}
-  const brand = content.brand || {}
+  const brand = useBrand()
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 72)
@@ -194,7 +194,7 @@ function Navbar() {
 
 function Hero() {
   const content = useContent()
-  const brand = content.brand || {}
+  const brand = useBrand()
 
   return (
     <section className="relative min-h-[100dvh] flex flex-col justify-end pb-16 md:pb-20 px-6 md:px-16 overflow-hidden">
@@ -221,8 +221,7 @@ function Hero() {
             <img
               src={brand.logoUrl}
               alt={brand.brandName || 'Unite SC'}
-              className="h-14 md:h-20 w-auto object-contain"
-              style={{ filter: 'brightness(0) invert(1)' }}
+              className="h-14 md:h-20 w-auto object-contain drop-shadow-lg"
             />
           </motion.div>
         )}
@@ -1133,13 +1132,20 @@ function SupportSection() {
 // ─── Content Context ─────────────────────────────────────────────────────────
 
 export const ContentContext = React.createContext(contentFallback)
+export const BrandContext = React.createContext({ logoUrl: null, brandName: 'Unite SC' })
+
+function useBrand() { return useContext(BrandContext) }
 
 // ─── App ──────────────────────────────────────────────────────────────────────
 
 export default function App() {
   const [siteContent, setSiteContent] = useState(null)
+  const [brand, setBrand] = useState({ logoUrl: null, brandName: 'Unite SC' })
 
   useEffect(() => {
+    // Fetch brand/logo independently — fast, isolated, can't be blocked by other field errors
+    getBrandSettings().then(setBrand).catch(() => {})
+
     getSiteSettings().then((data) => {
       if (data) {
         // Get logo URL directly from expanded Sanity asset
@@ -1218,18 +1224,20 @@ export default function App() {
   const content = siteContent || contentFallback
 
   return (
-    <ContentContext.Provider value={content}>
-      <NoiseOverlay />
-      <Navbar />
-      <main>
-        <Hero />
-        <MandateSection />
-        <CountyTracker />
-        <SentinelSection />
-        <PrayerSection />
-        <SupportSection />
-      </main>
-      <Footer />
-    </ContentContext.Provider>
+    <BrandContext.Provider value={brand}>
+      <ContentContext.Provider value={content}>
+        <NoiseOverlay />
+        <Navbar />
+        <main>
+          <Hero />
+          <MandateSection />
+          <CountyTracker />
+          <SentinelSection />
+          <PrayerSection />
+          <SupportSection />
+        </main>
+        <Footer />
+      </ContentContext.Provider>
+    </BrandContext.Provider>
   )
 }
