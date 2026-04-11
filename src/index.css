@@ -27,6 +27,11 @@
   }
 }
 
+@keyframes logoPulse {
+  0%, 100% { text-shadow: 0 0 40px rgba(196,87,43,0.9), 0 0 80px rgba(196,87,43,0.4); }
+  50%       { text-shadow: 0 0 60px rgba(196,87,43,1),   0 0 120px rgba(196,87,43,0.7), 0 0 200px rgba(196,87,43,0.2); }
+}
+
 @layer utilities {
   .noise-overlay {
     position: fixed;

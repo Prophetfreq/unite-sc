@@ -145,22 +145,20 @@ function Navbar() {
       transition={{ duration: 0.65, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
     >
       {/* Logo or brand name */}
-      {brand.logoUrl ? (
-        <img
-          src={brand.logoUrl}
-          alt={brand.brandName || 'Unite SC'}
-          className="object-contain"
-          style={{ height: 'auto', width: 'clamp(56px, 7vw, 80px)', filter: scrolled ? 'none' : 'brightness(0) invert(1)' }}
-        />
-      ) : (
-        <span
-          className={`font-bold tracking-tight text-sm transition-colors duration-400 ${
-            scrolled ? 'text-[#1C3A2A]' : 'text-[#F5F0E8]'
-          }`}
-        >
-          {brand.brandName || 'Unite SC'}
+      {/* Navbar wordmark */}
+      <div className="flex items-center gap-1">
+        <span className={`font-bold text-sm tracking-[0.12em] transition-colors duration-400 ${
+          scrolled ? 'text-[#1C3A2A]' : 'text-[#F5F0E8]'
+        }`}>
+          UNITE
         </span>
-      )}
+        <span className={`font-light text-xs tracking-[0.18em] transition-colors duration-400 ${
+          scrolled ? 'text-[#1C3A2A]/60' : 'text-[#F5F0E8]/55'
+        }`}>
+          SC
+        </span>
+        <span className="text-[#C4572B] font-bold text-sm ml-0.5">+</span>
+      </div>
 
       <div className="hidden md:flex items-center gap-5">
         {navLinks.map(({ label, href }) => (
@@ -209,23 +207,84 @@ function Hero() {
         <div className="absolute inset-0 bg-[#0F2219]/35" />
       </div>
 
-      {/* Logo — centered horizontally, positioned in upper third of hero */}
-      {brand.logoUrl && (
+      {/* Cinematic Text Logo — upper third of hero */}
+      <div
+        className="absolute top-0 left-0 right-0 flex flex-col items-center justify-center z-10 pointer-events-none"
+        style={{ height: '52%' }}
+      >
+        {/* Top accent line */}
         <motion.div
-          className="absolute top-0 left-0 right-0 flex justify-center z-10 pointer-events-none"
-          style={{ paddingTop: 'clamp(80px, 10vh, 140px)' }}
-          initial={{ opacity: 0, scale: 0.92 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
+          className="h-px bg-white/20 mb-6"
+          initial={{ width: 0 }}
+          animate={{ width: 'clamp(60px, 12vw, 140px)' }}
+          transition={{ duration: 0.9, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+        />
+
+        {/* Main logo text */}
+        <div className="flex items-center gap-3 md:gap-4">
+          {/* U N I T E — letter by letter */}
+          <div className="flex items-center" style={{ gap: '0.04em' }}>
+            {'UNITE'.split('').map((letter, i) => (
+              <motion.span
+                key={i}
+                initial={{ opacity: 0, y: 36 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.55, delay: 0.2 + i * 0.07, ease: [0.16, 1, 0.3, 1] }}
+                className="text-white font-bold leading-none"
+                style={{ fontSize: 'clamp(2.8rem, 6vw, 6rem)', letterSpacing: '0.06em' }}
+              >
+                {letter}
+              </motion.span>
+            ))}
+          </div>
+
+          {/* SC — lighter weight */}
+          <motion.span
+            initial={{ opacity: 0, y: 36 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.55, delay: 0.57, ease: [0.16, 1, 0.3, 1] }}
+            className="text-white/55 font-light leading-none"
+            style={{ fontSize: 'clamp(1.8rem, 4vw, 4rem)', letterSpacing: '0.12em' }}
+          >
+            SC
+          </motion.span>
+
+          {/* + — accent with glow pulse */}
+          <motion.span
+            initial={{ opacity: 0, scale: 0.3, rotate: -45 }}
+            animate={{ opacity: 1, scale: 1, rotate: 0 }}
+            transition={{ duration: 0.7, delay: 0.75, ease: [0.34, 1.56, 0.64, 1] }}
+            className="text-[#C4572B] font-bold leading-none"
+            style={{
+              fontSize: 'clamp(2.4rem, 5vw, 5rem)',
+              textShadow: '0 0 40px rgba(196,87,43,0.9), 0 0 80px rgba(196,87,43,0.4)',
+              animation: 'logoPulse 3s ease-in-out infinite',
+              animationDelay: '1.4s',
+            }}
+          >
+            +
+          </motion.span>
+        </div>
+
+        {/* Tagline */}
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1, delay: 1.1 }}
+          className="font-mono text-white/35 tracking-[0.3em] uppercase mt-4"
+          style={{ fontSize: 'clamp(0.55rem, 1vw, 0.75rem)' }}
         >
-          <img
-            src={brand.logoUrl}
-            alt={brand.brandName || 'Unite SC'}
-            className="object-contain drop-shadow-2xl"
-            style={{ height: 'auto', width: 'clamp(160px, 20vw, 280px)' }}
-          />
-        </motion.div>
-      )}
+          South Carolina · 46 Counties · One Mandate
+        </motion.p>
+
+        {/* Bottom accent line */}
+        <motion.div
+          className="h-px bg-white/20 mt-6"
+          initial={{ width: 0 }}
+          animate={{ width: 'clamp(60px, 12vw, 140px)' }}
+          transition={{ duration: 0.9, delay: 1.0, ease: [0.16, 1, 0.3, 1] }}
+        />
+      </div>
 
       <motion.div
         className="relative z-10 max-w-[1400px] mx-auto w-full"
