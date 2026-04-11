@@ -209,23 +209,29 @@ function Hero() {
         <div className="absolute inset-0 bg-[#0F2219]/35" />
       </div>
 
+      {/* Logo — absolutely centered in the open hero space */}
+      {brand.logoUrl && (
+        <motion.div
+          className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none"
+          initial={{ opacity: 0, scale: 0.92 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
+        >
+          <img
+            src={brand.logoUrl}
+            alt={brand.brandName || 'Unite SC'}
+            className="object-contain drop-shadow-2xl"
+            style={{ height: 'auto', width: 'clamp(160px, 20vw, 280px)' }}
+          />
+        </motion.div>
+      )}
+
       <motion.div
         className="relative z-10 max-w-[1400px] mx-auto w-full"
         variants={stagger}
         initial="hidden"
         animate="visible"
       >
-        {/* Logo in hero — shown above eyebrow text */}
-        {brand.logoUrl && (
-          <motion.div variants={fadeUp} className="mb-8">
-            <img
-              src={brand.logoUrl}
-              alt={brand.brandName || 'Unite SC'}
-              className="object-contain drop-shadow-lg"
-              style={{ height: 'auto', width: 'clamp(140px, 16vw, 220px)' }}
-            />
-          </motion.div>
-        )}
 
         <motion.p
           variants={fadeUp}
