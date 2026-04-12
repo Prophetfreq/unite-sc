@@ -6,13 +6,14 @@ export default {
   groups: [
     { name: 'brand',      title: '🎨 Brand & Logo' },
     { name: 'navigation', title: '🔗 Navigation' },
-    { name: 'hero',       title: 'Hero' },
-    { name: 'mandate',    title: 'Mandate' },
-    { name: 'prayer',     title: 'Prayer' },
-    { name: 'sentinel',   title: 'Sentinel' },
-    { name: 'support',    title: 'Support' },
-    { name: 'footer',     title: 'Footer' },
-    { name: 'scriptures', title: 'Scriptures' },
+    { name: 'hero',       title: '🏠 Hero' },
+    { name: 'stats',      title: '📊 Stats' },
+    { name: 'mandate',    title: '📜 Mandate' },
+    { name: 'prayer',     title: '🙏 Prayer' },
+    { name: 'sentinel',   title: '🗝️ Sentinel' },
+    { name: 'support',    title: '💚 Support & Giving' },
+    { name: 'footer',     title: '🔻 Footer' },
+    { name: 'scriptures', title: '📖 Scriptures' },
   ],
   fields: [
 
@@ -347,6 +348,54 @@ export default {
       title: 'Support — Giving Link URL',
       type: 'url',
       group: 'support',
+      description: 'Fallback giving URL (used if no tiers are defined below).',
+    },
+    {
+      name: 'supportTiers',
+      title: 'Support — Giving Tiers',
+      type: 'array',
+      group: 'support',
+      description: 'Each card in the support/giving section. Mark one as Featured to highlight it.',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            { name: 'name',     title: 'Tier Name',     type: 'string',  validation: (Rule) => Rule.required() },
+            { name: 'amount',   title: 'Amount',        type: 'string',  description: 'e.g. "$50/mo" or "$185"' },
+            { name: 'desc',     title: 'Description',   type: 'text',    rows: 2 },
+            { name: 'tag',      title: 'Badge Label',   type: 'string',  description: 'e.g. "Most popular" or "Start here"' },
+            { name: 'url',      title: 'Giving URL',    type: 'url',     validation: (Rule) => Rule.required() },
+            { name: 'featured', title: 'Featured (highlighted card)', type: 'boolean', initialValue: false },
+          ],
+          preview: {
+            select: { title: 'name', subtitle: 'amount', featured: 'featured' },
+            prepare({ title, subtitle, featured }) {
+              return { title: `${featured ? '⭐ ' : ''}${title}`, subtitle }
+            },
+          },
+        },
+      ],
+    },
+
+    // ─── Stats ────────────────────────────────────────────────────────────────
+    {
+      name: 'stats',
+      title: 'Stats — Key Numbers',
+      type: 'array',
+      group: 'stats',
+      description: 'Numbers shown in the intro / mission section (e.g. 46 Counties, 4 Regions).',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            { name: 'value', title: 'Number / Value', type: 'string', description: 'e.g. "46"' },
+            { name: 'label', title: 'Label',          type: 'string', description: 'e.g. "Counties"' },
+          ],
+          preview: {
+            select: { title: 'value', subtitle: 'label' },
+          },
+        },
+      ],
     },
 
     // ─── Footer ───────────────────────────────────────────────────────────────

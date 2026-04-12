@@ -4,6 +4,8 @@ import { visionTool } from '@sanity/vision'
 import siteSettings from './schemas/siteSettings'
 import countyVisit from './schemas/countyVisit'
 import prayerUpdate from './schemas/prayerUpdate'
+import journalEntry from './schemas/journalEntry'
+import teamMember from './schemas/teamMember'
 
 export default defineConfig({
   name: 'default',
@@ -16,37 +18,65 @@ export default defineConfig({
     structureTool({
       structure: (S) =>
         S.list()
-          .title('Unite SC')
+          .title('Unite SC +')
           .items([
-            // Singleton — Site Settings
+
+            // ── Singleton ─────────────────────────────────────────────────
             S.listItem()
-              .title('Site Content')
+              .title('🎨 Site Settings')
               .id('siteSettings')
               .child(
                 S.document()
                   .schemaType('siteSettings')
                   .documentId('siteSettings')
+                  .title('Site Settings')
               ),
 
             S.divider(),
 
-            // County Visits
+            // ── Journey ───────────────────────────────────────────────────
             S.listItem()
-              .title('County Visits')
-              .schemaType('countyVisit')
-              .child(S.documentTypeList('countyVisit').title('County Visits')),
+              .title('🗺️ Journey Journal')
+              .schemaType('journalEntry')
+              .child(
+                S.documentTypeList('journalEntry')
+                  .title('Journey Journal')
+                  .defaultOrdering([{ field: 'date', direction: 'desc' }])
+              ),
 
-            // Prayer Updates
             S.listItem()
-              .title('Prayer Updates')
+              .title('📍 County Visits')
+              .schemaType('countyVisit')
+              .child(
+                S.documentTypeList('countyVisit')
+                  .title('County Visits')
+              ),
+
+            S.divider(),
+
+            // ── Community ─────────────────────────────────────────────────
+            S.listItem()
+              .title('🙏 Prayer Updates')
               .schemaType('prayerUpdate')
-              .child(S.documentTypeList('prayerUpdate').title('Prayer Updates')),
+              .child(
+                S.documentTypeList('prayerUpdate')
+                  .title('Prayer Updates')
+              ),
+
+            S.listItem()
+              .title('👥 Team')
+              .schemaType('teamMember')
+              .child(
+                S.documentTypeList('teamMember')
+                  .title('Team')
+                  .defaultOrdering([{ field: 'order', direction: 'asc' }])
+              ),
           ]),
     }),
     visionTool(),
   ],
 
   schema: {
-    types: [siteSettings, countyVisit, prayerUpdate],
+    types: [siteSettings, countyVisit, prayerUpdate, journalEntry, teamMember],
   },
 })

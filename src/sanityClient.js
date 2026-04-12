@@ -34,3 +34,24 @@ export async function getBrandSettings() {
     navCTALabel: data?.navCTALabel || null,
   }
 }
+
+export async function getSupportTiers() {
+  const data = await sanity.fetch(`*[_id == "siteSettings"][0]{
+    supportTiers[]{ name, amount, desc, tag, url, featured }
+  }`)
+  return data?.supportTiers || null
+}
+
+export async function getSentinelTraits() {
+  const data = await sanity.fetch(`*[_id == "siteSettings"][0]{
+    sentinelTraits[]{ label, desc }
+  }`)
+  return data?.sentinelTraits || null
+}
+
+export async function getStats() {
+  const data = await sanity.fetch(`*[_id == "siteSettings"][0]{
+    stats[]{ value, label }
+  }`)
+  return data?.stats || null
+}

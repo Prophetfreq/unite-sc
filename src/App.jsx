@@ -4,6 +4,13 @@ import { ArrowRight, Circle, X } from '@phosphor-icons/react'
 import { ComposableMap, Geographies, Geography } from 'react-simple-maps'
 import contentFallback from './content.json'
 import { getSiteSettings, getBrandSettings } from './sanityClient'
+
+const DEFAULT_STATS = [
+  { value: '46', label: 'Counties' },
+  { value: '4',  label: 'Regions' },
+  { value: '18', label: 'Months' },
+  { value: '2',  label: 'Sent Ones' },
+]
 import { supabase } from './supabase.js'
 import { WebGLShader } from './components/ui/web-gl-shader.jsx'
 
@@ -615,12 +622,7 @@ function IntroSection() {
           </div>
 
           <div className="grid grid-cols-2 gap-4 pt-2">
-            {[
-              { value: '46', label: 'Counties' },
-              { value: '4',  label: 'Regions' },
-              { value: '18', label: 'Months' },
-              { value: '2',  label: 'Sent Ones' },
-            ].map((s) => (
+            {(content.stats || DEFAULT_STATS).map((s) => (
               <div key={s.label} className="border border-[#1C3A2A]/60 rounded-2xl p-4">
                 <div className="font-mono text-[#C4572B] text-2xl font-bold leading-none mb-1">{s.value}</div>
                 <div className="text-[#E8DCC8]/40 text-[0.6rem] tracking-widest uppercase font-mono">{s.label}</div>
@@ -1342,8 +1344,22 @@ function Footer() {
           <div>
             <div className="font-mono text-[#4A7A62] text-xs uppercase tracking-widest mb-5">Ministry</div>
             <div className="text-[#E8DCC8]/60 text-sm mb-2">Reuben & Grace Kora</div>
-            <div className="text-[#E8DCC8]/60 text-sm mb-2">Glory City Church Aiken</div>
-            <div className="text-[#E8DCC8]/60 text-sm mb-2">Radiant Eternity</div>
+            <a
+              href="https://glorycityaiken.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block text-[#E8DCC8]/60 text-sm mb-2 hover:text-[#C4572B] transition-colors duration-200"
+            >
+              Glory City Church Aiken
+            </a>
+            <a
+              href="https://radianteternity.org"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block text-[#E8DCC8]/60 text-sm mb-2 hover:text-[#C4572B] transition-colors duration-200"
+            >
+              Radiant Eternity
+            </a>
             <div className="text-[#E8DCC8]/60 text-sm mb-6">Aiken, South Carolina</div>
             <div className="font-mono text-[#C4572B] text-xs">2026 Mandate</div>
           </div>
@@ -1355,7 +1371,17 @@ function Footer() {
             <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
             <span className="font-mono text-[#4A7A62] text-xs">Mandate Active — 0 of 46 Counties Visited</span>
           </div>
-          <div className="font-mono text-[#4A7A62]/40 text-xs">Unite SC — Radiant Eternity &copy; 2026</div>
+          <div className="flex flex-col sm:items-end gap-1">
+            <div className="font-mono text-[#4A7A62]/40 text-xs">Unite SC — Radiant Eternity &copy; 2026</div>
+            <a
+              href="https://propheticfrequency.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-mono text-[#4A7A62]/30 text-[0.6rem] tracking-widest uppercase hover:text-[#4A7A62]/60 transition-colors duration-200"
+            >
+              Designed & Maintained by Prophetic Frequency LLC
+            </a>
+          </div>
         </div>
       </div>
     </footer>
@@ -1398,6 +1424,7 @@ const TIERS = [
 
 function SupportSection() {
   const content = useContent()
+  const tiers = content.support?.tiers || TIERS
   const ref = useRef(null)
   const inView = useInView(ref, { once: true, margin: '-80px' })
 
@@ -1455,7 +1482,7 @@ function SupportSection() {
             variants={stagger}
             className="grid grid-cols-1 sm:grid-cols-2 gap-4"
           >
-            {TIERS.map((tier) => (
+            {tiers.map((tier) => (
               <motion.div
                 key={tier.name}
                 variants={fadeUp}
@@ -1619,7 +1646,9 @@ export default function App() {
             headline_italic: data.supportHeadlineItalic,
             body:            data.supportBody,
             give_url:        data.supportGiveUrl,
+            tiers:           data.supportTiers?.length ? data.supportTiers : null,
           },
+          stats: data.stats?.length ? data.stats : null,
           footer: {
             tagline:       data.footerTagline,
             contact_email: data.footerContactEmail,
