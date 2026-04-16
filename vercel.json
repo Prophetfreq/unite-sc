@@ -10,7 +10,7 @@
         { "key": "X-XSS-Protection", "value": "1; mode=block" },
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://images.unsplash.com https://cdn.sanity.io; connect-src 'self' https://*.supabase.co https://*.sanity.io https://cdn.jsdelivr.net; frame-ancestors 'none';"
+          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://images.unsplash.com https://cdn.sanity.io; connect-src 'self' https://*.supabase.co https://*.sanity.io https://cdn.jsdelivr.net https://formspree.io; frame-ancestors 'none';"
         }
       ]
     }

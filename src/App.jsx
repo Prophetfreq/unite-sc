@@ -13,6 +13,7 @@ const DEFAULT_STATS = [
 ]
 import { supabase } from './supabase.js'
 import { WebGLShader } from './components/ui/web-gl-shader.jsx'
+import ContactForm from './components/ContactForm.jsx'
 
 // ─── Data ────────────────────────────────────────────────────────────────────
 
@@ -1674,6 +1675,7 @@ export default function App() {
           <SentinelSection />
           <PrayerSection />
           <SupportSection />
+          <ContactForm />
         </main>
         <Footer />
       </ContentContext.Provider>
