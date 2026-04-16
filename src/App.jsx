@@ -140,6 +140,7 @@ function Navbar() {
     { label: nav.nav2Label || 'Counties',      href: '#counties' },
     { label: nav.nav3Label || 'The Sentinel',  href: '#the-sentinel' },
     { label: nav.nav4Label || 'Support',       href: '#support' },
+    { label: nav.nav5Label || 'Contact',       href: '#contact' },
   ]
 
   return (
@@ -1331,6 +1332,7 @@ function Footer() {
               { label: 'The Sentinel', href: '#the-sentinel' },
               { label: 'Prayer', href: '#prayer' },
               { label: 'Support', href: '#support' },
+              { label: 'Contact', href: '#contact' },
             ].map(({ label, href }) => (
               <a
                 key={label}

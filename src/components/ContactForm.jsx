@@ -7,7 +7,7 @@ const FORMSPREE_ENDPOINT =
   import.meta.env.VITE_FORMSPREE_ENDPOINT || 'https://formspree.io/f/mpqkplga'
 
 const inputClass =
-  'w-full bg-[#1C3A2A] border border-[#2E5240] rounded-2xl px-4 py-3 text-[#E8DCC8] text-sm placeholder-[#E8DCC8]/35 focus:outline-none focus:border-[#C4572B]/60 focus:ring-2 focus:ring-[#C4572B]/15 transition-colors'
+  'w-full bg-white border border-[#1C3A2A]/15 rounded-2xl px-4 py-3 text-[#1A1A1A] text-sm placeholder-[#9A9A8A] focus:outline-none focus:border-[#2E5240]/50 focus:ring-2 focus:ring-[#2E5240]/10 transition-all'
 
 export default function ContactForm() {
   const [form, setForm] = useState({
@@ -61,7 +61,7 @@ export default function ContactForm() {
   }
 
   return (
-    <section id="contact" className="px-6 md:px-16 py-24 bg-[#1C3A2A]">
+    <section id="contact" className="px-6 md:px-16 py-24 bg-[#F5F0E8]">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -69,23 +69,29 @@ export default function ContactForm() {
         transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
         className="max-w-2xl mx-auto"
       >
-        <div className="w-8 h-px bg-[#C4572B] mb-6" />
-        <h2 className="font-display italic text-[#E8DCC8] text-3xl md:text-4xl leading-tight mb-3">
-          Reach out if interested.
+        <p className="font-mono text-[#4A7A62] text-xs tracking-widest uppercase mb-4">
+          Get in touch
+        </p>
+        <h2 className="text-[#1C3A2A] font-bold text-3xl md:text-5xl tracking-tight leading-tight mb-4">
+          Reach out
+          <span className="font-display italic text-[#C4572B]"> if interested.</span>
         </h2>
-        <p className="text-[#E8DCC8]/60 text-sm md:text-base mb-10 max-w-lg">
+        <p className="text-[#2E5240]/70 text-base md:text-lg leading-relaxed mb-10 max-w-lg">
           If this mandate stirs something in you, leave your details and Reuben &amp; Grace will be in touch.
         </p>
 
         {status === 'sent' ? (
-          <div className="border border-[#2E5240] rounded-4xl p-8 md:p-10 text-center">
+          <div className="bg-white border border-[#1C3A2A]/10 rounded-4xl p-8 md:p-10 text-center shadow-sm">
             <div className="w-8 h-px bg-[#C4572B] mx-auto mb-5" />
-            <p className="font-display italic text-[#E8DCC8] text-xl md:text-2xl leading-relaxed">
+            <p className="font-display italic text-[#1C3A2A] text-xl md:text-2xl leading-relaxed">
               Thanks — we received your message. We&apos;ll be in touch soon.
             </p>
           </div>
         ) : (
-          <form onSubmit={submit} className="border border-[#2E5240] rounded-4xl p-6 md:p-8 space-y-5">
+          <form
+            onSubmit={submit}
+            className="bg-white border border-[#1C3A2A]/10 rounded-4xl p-6 md:p-8 space-y-5 shadow-sm"
+          >
             <div className="grid md:grid-cols-2 gap-5">
               <Field label="Name" required>
                 <input
@@ -167,7 +173,7 @@ export default function ContactForm() {
 function Field({ label, required, children }) {
   return (
     <label className="block">
-      <span className="block text-[#E8DCC8]/70 text-[11px] uppercase tracking-[0.14em] mb-2">
+      <span className="block font-mono text-[#2E5240] text-[11px] uppercase tracking-[0.14em] mb-2">
         {label}
         {required && <span className="text-[#C4572B] ml-1">*</span>}
       </span>
