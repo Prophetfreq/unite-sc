@@ -12,7 +12,6 @@ const DEFAULT_STATS = [
   { value: '2',  label: 'Sent Ones' },
 ]
 import { supabase } from './supabase.js'
-import { WebGLShader } from './components/ui/web-gl-shader.jsx'
 import ContactForm from './components/ContactForm.jsx'
 
 // ─── Data ────────────────────────────────────────────────────────────────────
