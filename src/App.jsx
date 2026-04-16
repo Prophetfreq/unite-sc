@@ -152,7 +152,7 @@ function Navbar() {
   return (
     <>
       <motion.nav
-        className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 flex items-center md:grid md:grid-cols-[auto_1fr_auto] px-5 py-3 md:px-6 md:py-3.5 rounded-full transition-all duration-500 md:min-w-[680px] ${
+        className={`fixed top-4 left-1/2 -translate-x-1/2 z-[70] flex items-center md:grid md:grid-cols-[auto_1fr_auto] px-5 py-3 md:px-6 md:py-3.5 rounded-full transition-all duration-500 md:min-w-[680px] ${
           scrolled
             ? 'bg-[#F5F0E8]/90 backdrop-blur-xl border border-[#1C3A2A]/12 shadow-[0_4px_24px_-4px_rgba(28,58,42,0.12)]'
             : 'bg-[#0A1A10]/40 backdrop-blur-sm border border-white/10'
@@ -203,19 +203,19 @@ function Navbar() {
           {nav.navCTALabel || 'View Counties'}
         </a>
 
-        {/* Mobile hamburger */}
+        {/* Mobile hamburger / close toggle */}
         <button
           type="button"
-          onClick={() => setMenuOpen(true)}
-          aria-label="Open menu"
+          onClick={() => setMenuOpen((v) => !v)}
+          aria-label={menuOpen ? 'Close menu' : 'Open menu'}
           aria-expanded={menuOpen}
           className={`md:hidden ml-auto mr-2 w-9 h-9 flex flex-col items-center justify-center gap-[5px] rounded-full transition-colors duration-300 ${
             scrolled ? 'text-[#1C3A2A]' : 'text-[#F5F0E8]'
           }`}
         >
-          <span className="block w-4 h-px bg-current" />
-          <span className="block w-4 h-px bg-current" />
-          <span className="block w-4 h-px bg-current" />
+          <span className={`block w-4 h-px bg-current transition-transform duration-200 ${menuOpen ? 'translate-y-[6px] rotate-45' : ''}`} />
+          <span className={`block w-4 h-px bg-current transition-opacity duration-200 ${menuOpen ? 'opacity-0' : ''}`} />
+          <span className={`block w-4 h-px bg-current transition-transform duration-200 ${menuOpen ? '-translate-y-[6px] -rotate-45' : ''}`} />
         </button>
 
         {/* Mobile CTA — compact */}
@@ -231,57 +231,54 @@ function Navbar() {
         </a>
       </motion.nav>
 
-      {/* Mobile menu overlay */}
+      {/* Mobile floating menu */}
       <AnimatePresence>
         {menuOpen && (
-          <motion.div
-            key="mobile-menu"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.25 }}
-            className="md:hidden fixed inset-0 z-[60] bg-[#0A1A10]/95 backdrop-blur-lg"
-            onClick={() => setMenuOpen(false)}
-          >
+          <>
+            {/* Invisible click-catcher to close on outside tap */}
+            <div
+              className="md:hidden fixed inset-0 z-[55]"
+              onClick={() => setMenuOpen(false)}
+              aria-hidden="true"
+            />
+            {/* Floating panel, anchored below the navbar */}
             <motion.div
-              initial={{ y: -20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: -20, opacity: 0 }}
-              transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-              className="flex flex-col h-full pt-24 px-8 pb-10"
-              onClick={(e) => e.stopPropagation()}
+              key="mobile-menu"
+              initial={{ opacity: 0, y: -8, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -8, scale: 0.98 }}
+              transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+              className={`md:hidden fixed top-[72px] left-1/2 -translate-x-1/2 z-[60] w-[calc(100vw-2rem)] max-w-sm rounded-3xl overflow-hidden border ${
+                scrolled
+                  ? 'bg-[#F5F0E8]/95 backdrop-blur-xl border-[#1C3A2A]/12 shadow-[0_12px_40px_-8px_rgba(28,58,42,0.22)]'
+                  : 'bg-[#0A1A10]/90 backdrop-blur-xl border-white/10 shadow-[0_12px_40px_-8px_rgba(0,0,0,0.45)]'
+              }`}
             >
-              <button
-                type="button"
-                onClick={() => setMenuOpen(false)}
-                aria-label="Close menu"
-                className="absolute top-6 right-6 w-10 h-10 flex items-center justify-center rounded-full text-[#F5F0E8] text-2xl leading-none"
-              >
-                ×
-              </button>
-
-              <nav className="flex flex-col gap-6">
+              <nav className="flex flex-col p-2">
                 {navLinks.map(({ label, href }) => (
                   <a
                     key={href}
                     href={href}
                     onClick={() => setMenuOpen(false)}
-                    className="text-[#F5F0E8] text-3xl font-bold tracking-tight"
+                    className={`px-5 py-3 rounded-2xl text-base font-medium transition-colors ${
+                      scrolled
+                        ? 'text-[#1C3A2A] hover:bg-[#1C3A2A]/5'
+                        : 'text-[#F5F0E8] hover:bg-white/8'
+                    }`}
                   >
                     {label}
                   </a>
                 ))}
+                <a
+                  href="#counties"
+                  onClick={() => setMenuOpen(false)}
+                  className="mx-3 mt-2 mb-1 inline-flex items-center justify-center px-5 py-3 rounded-full bg-[#C4572B] text-[#F5F0E8] text-sm font-semibold tracking-wide"
+                >
+                  {nav.navCTALabel || 'View Counties'}
+                </a>
               </nav>
-
-              <a
-                href="#counties"
-                onClick={() => setMenuOpen(false)}
-                className="mt-auto inline-flex items-center justify-center px-6 py-3.5 rounded-full bg-[#C4572B] text-[#F5F0E8] text-base font-semibold tracking-wide"
-              >
-                {nav.navCTALabel || 'View Counties'}
-              </a>
             </motion.div>
-          </motion.div>
+          </>
         )}
       </AnimatePresence>
     </>
