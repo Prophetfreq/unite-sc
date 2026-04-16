@@ -125,6 +125,7 @@ function NoiseOverlay() {
 
 function Navbar() {
   const [scrolled, setScrolled] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
   const content = useContent()
   const nav = content.navigation || {}
   const brand = useBrand()
@@ -135,6 +136,11 @@ function Navbar() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? 'hidden' : ''
+    return () => { document.body.style.overflow = '' }
+  }, [menuOpen])
+
   const navLinks = [
     { label: nav.nav1Label || 'The Mandate',  href: '#the-mandate' },
     { label: nav.nav2Label || 'Counties',      href: '#counties' },
@@ -144,70 +150,141 @@ function Navbar() {
   ]
 
   return (
-    <motion.nav
-      className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 flex items-center md:grid md:grid-cols-[auto_1fr_auto] px-5 py-3 md:px-6 md:py-3.5 rounded-full transition-all duration-500 md:min-w-[680px] ${
-        scrolled
-          ? 'bg-[#F5F0E8]/90 backdrop-blur-xl border border-[#1C3A2A]/12 shadow-[0_4px_24px_-4px_rgba(28,58,42,0.12)]'
-          : 'bg-[#0A1A10]/40 backdrop-blur-sm border border-white/10'
-      }`}
-      initial={{ y: -24, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.65, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-    >
-      {/* Wordmark — left */}
-      <div className="flex items-center gap-1 md:pr-6">
-        <span className={`font-bold text-sm md:text-base tracking-[0.12em] transition-colors duration-400 ${
-          scrolled ? 'text-[#1C3A2A]' : 'text-[#F5F0E8]'
-        }`}>
-          UNITE
-        </span>
-        <span className={`font-light text-xs md:text-sm tracking-[0.18em] transition-colors duration-400 ${
-          scrolled ? 'text-[#1C3A2A]/60' : 'text-[#F5F0E8]/55'
-        }`}>
-          SC
-        </span>
-        <span className="text-[#C4572B] font-bold text-sm md:text-base ml-0.5">+</span>
-      </div>
+    <>
+      <motion.nav
+        className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 flex items-center md:grid md:grid-cols-[auto_1fr_auto] px-5 py-3 md:px-6 md:py-3.5 rounded-full transition-all duration-500 md:min-w-[680px] ${
+          scrolled
+            ? 'bg-[#F5F0E8]/90 backdrop-blur-xl border border-[#1C3A2A]/12 shadow-[0_4px_24px_-4px_rgba(28,58,42,0.12)]'
+            : 'bg-[#0A1A10]/40 backdrop-blur-sm border border-white/10'
+        }`}
+        initial={{ y: -24, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.65, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+      >
+        {/* Wordmark — left */}
+        <div className="flex items-center gap-1 md:pr-6">
+          <span className={`font-bold text-sm md:text-base tracking-[0.12em] transition-colors duration-400 ${
+            scrolled ? 'text-[#1C3A2A]' : 'text-[#F5F0E8]'
+          }`}>
+            UNITE
+          </span>
+          <span className={`font-light text-xs md:text-sm tracking-[0.18em] transition-colors duration-400 ${
+            scrolled ? 'text-[#1C3A2A]/60' : 'text-[#F5F0E8]/55'
+          }`}>
+            SC
+          </span>
+          <span className="text-[#C4572B] font-bold text-sm md:text-base ml-0.5">+</span>
+        </div>
 
-      {/* Nav links — centered, desktop only */}
-      <div className="hidden md:flex items-center justify-center gap-7">
-        {navLinks.map(({ label, href }) => (
-          <a
-            key={href}
-            href={href}
-            className={`text-sm font-medium transition-all duration-300 hover:-translate-y-px whitespace-nowrap ${
-              scrolled ? 'text-[#6B6B5A] hover:text-[#1C3A2A]' : 'text-[#F5F0E8]/70 hover:text-[#F5F0E8]'
-            }`}
+        {/* Nav links — centered, desktop only */}
+        <div className="hidden md:flex items-center justify-center gap-7">
+          {navLinks.map(({ label, href }) => (
+            <a
+              key={href}
+              href={href}
+              className={`text-sm font-medium transition-all duration-300 hover:-translate-y-px whitespace-nowrap ${
+                scrolled ? 'text-[#6B6B5A] hover:text-[#1C3A2A]' : 'text-[#F5F0E8]/70 hover:text-[#F5F0E8]'
+              }`}
+            >
+              {label}
+            </a>
+          ))}
+        </div>
+
+        {/* CTA — right (desktop) */}
+        <a
+          href="#counties"
+          className={`hidden md:inline-flex ml-6 text-sm font-semibold px-5 py-2 rounded-full transition-all duration-300 hover:scale-[1.03] active:scale-[0.98] whitespace-nowrap ${
+            scrolled
+              ? 'bg-[#C4572B] text-[#F5F0E8]'
+              : 'bg-[#F5F0E8]/12 border border-[#F5F0E8]/25 text-[#F5F0E8]'
+          }`}
+        >
+          {nav.navCTALabel || 'View Counties'}
+        </a>
+
+        {/* Mobile hamburger */}
+        <button
+          type="button"
+          onClick={() => setMenuOpen(true)}
+          aria-label="Open menu"
+          aria-expanded={menuOpen}
+          className={`md:hidden ml-auto mr-2 w-9 h-9 flex flex-col items-center justify-center gap-[5px] rounded-full transition-colors duration-300 ${
+            scrolled ? 'text-[#1C3A2A]' : 'text-[#F5F0E8]'
+          }`}
+        >
+          <span className="block w-4 h-px bg-current" />
+          <span className="block w-4 h-px bg-current" />
+          <span className="block w-4 h-px bg-current" />
+        </button>
+
+        {/* Mobile CTA — compact */}
+        <a
+          href="#counties"
+          className={`md:hidden text-xs font-semibold px-4 py-1.5 rounded-full transition-all duration-300 whitespace-nowrap ${
+            scrolled
+              ? 'bg-[#C4572B] text-[#F5F0E8]'
+              : 'bg-[#F5F0E8]/12 border border-[#F5F0E8]/25 text-[#F5F0E8]'
+          }`}
+        >
+          View
+        </a>
+      </motion.nav>
+
+      {/* Mobile menu overlay */}
+      <AnimatePresence>
+        {menuOpen && (
+          <motion.div
+            key="mobile-menu"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            className="md:hidden fixed inset-0 z-[60] bg-[#0A1A10]/95 backdrop-blur-lg"
+            onClick={() => setMenuOpen(false)}
           >
-            {label}
-          </a>
-        ))}
-      </div>
+            <motion.div
+              initial={{ y: -20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: -20, opacity: 0 }}
+              transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+              className="flex flex-col h-full pt-24 px-8 pb-10"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                type="button"
+                onClick={() => setMenuOpen(false)}
+                aria-label="Close menu"
+                className="absolute top-6 right-6 w-10 h-10 flex items-center justify-center rounded-full text-[#F5F0E8] text-2xl leading-none"
+              >
+                ×
+              </button>
 
-      {/* CTA — right (desktop) */}
-      <a
-        href="#counties"
-        className={`hidden md:inline-flex ml-6 text-sm font-semibold px-5 py-2 rounded-full transition-all duration-300 hover:scale-[1.03] active:scale-[0.98] whitespace-nowrap ${
-          scrolled
-            ? 'bg-[#C4572B] text-[#F5F0E8]'
-            : 'bg-[#F5F0E8]/12 border border-[#F5F0E8]/25 text-[#F5F0E8]'
-        }`}
-      >
-        {nav.navCTALabel || 'View Counties'}
-      </a>
+              <nav className="flex flex-col gap-6">
+                {navLinks.map(({ label, href }) => (
+                  <a
+                    key={href}
+                    href={href}
+                    onClick={() => setMenuOpen(false)}
+                    className="text-[#F5F0E8] text-3xl font-bold tracking-tight"
+                  >
+                    {label}
+                  </a>
+                ))}
+              </nav>
 
-      {/* Mobile CTA — compact */}
-      <a
-        href="#counties"
-        className={`md:hidden ml-4 text-xs font-semibold px-4 py-1.5 rounded-full transition-all duration-300 whitespace-nowrap ${
-          scrolled
-            ? 'bg-[#C4572B] text-[#F5F0E8]'
-            : 'bg-[#F5F0E8]/12 border border-[#F5F0E8]/25 text-[#F5F0E8]'
-        }`}
-      >
-        View
-      </a>
-    </motion.nav>
+              <a
+                href="#counties"
+                onClick={() => setMenuOpen(false)}
+                className="mt-auto inline-flex items-center justify-center px-6 py-3.5 rounded-full bg-[#C4572B] text-[#F5F0E8] text-base font-semibold tracking-wide"
+              >
+                {nav.navCTALabel || 'View Counties'}
+              </a>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   )
 }
 
@@ -441,7 +518,7 @@ function Hero() {
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1.2, delay: 1.1 }}
-          className="font-mono text-white/30 uppercase mt-6 text-center"
+          className="font-mono text-white/55 uppercase mt-6 text-center"
           style={{ fontSize: 'clamp(0.55rem, 1.2vw, 0.75rem)', letterSpacing: '0.35em' }}
         >
           South Carolina &nbsp;·&nbsp; 46 Counties &nbsp;·&nbsp; One Mandate
@@ -588,7 +665,7 @@ function IntroSection() {
         initial={{ opacity: 0, y: 12 }}
         animate={inView ? { opacity: 1, y: 0 } : {}}
         transition={{ duration: 0.6 }}
-        className="font-mono text-[#4A7A62] text-[0.6rem] tracking-[0.3em] uppercase text-center"
+        className="font-mono text-[#E8DCC8]/55 text-[0.6rem] tracking-[0.3em] uppercase text-center"
       >
         Reuben & Grace Kora &nbsp;·&nbsp; A Prophetic Mandate &nbsp;·&nbsp; 2026
       </motion.p>
@@ -1288,12 +1365,12 @@ function PrayerSection() {
 
             {/* County declaration note */}
             <motion.div variants={fadeUp} className="bg-[#1C3A2A] rounded-3xl p-6">
-              <div className="font-mono text-[#4A7A62] text-xs uppercase tracking-widest mb-3">What Is Left Behind</div>
+              <div className="font-mono text-[#E8DCC8]/75 text-xs uppercase tracking-widest mb-3">What Is Left Behind</div>
               <div className="space-y-2">
                 {content.prayer.left_behind_items.map((item) => (
                   <div key={item} className="flex items-start gap-3">
                     <div className="w-1 h-1 rounded-full bg-[#C4572B] mt-2 flex-shrink-0" />
-                    <span className="text-[#E8DCC8]/65 text-sm">{item}</span>
+                    <span className="text-[#E8DCC8]/85 text-sm">{item}</span>
                   </div>
                 ))}
               </div>
@@ -1380,7 +1457,7 @@ function Footer() {
               href="https://propheticfrequency.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="font-mono text-[#4A7A62]/30 text-[0.6rem] tracking-widest uppercase hover:text-[#4A7A62]/60 transition-colors duration-200"
+              className="font-mono text-[#4A7A62]/65 text-[0.6rem] tracking-widest uppercase hover:text-[#4A7A62] transition-colors duration-200"
             >
               Designed & Maintained by Prophetic Frequency LLC
             </a>
