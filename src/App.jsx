@@ -1463,7 +1463,7 @@ function SupportSection() {
               <div className="border border-[#2E5240] rounded-4xl p-7">
                 <div className="w-8 h-px bg-[#C4572B] mb-6" />
                 <p className="font-display italic text-[#E8DCC8] text-xl md:text-2xl leading-relaxed mb-5">
-                  "Every gift — large or small — puts Reuben & Grace one step closer to the next county."
+                  "Every gift — large or small — helps carry what God is doing across South Carolina, county by county."
                 </p>
                 <div className="space-y-2 pt-4 border-t border-[#2E5240]">
                   {['Travel & fuel', 'Overnight accommodation', 'Ministry materials & admin'].map((item) => (
