@@ -152,7 +152,7 @@ function Navbar() {
   return (
     <>
       <motion.nav
-        className={`fixed top-4 left-1/2 -translate-x-1/2 z-[70] flex items-center md:grid md:grid-cols-[auto_1fr_auto] px-5 py-3 md:px-6 md:py-3.5 rounded-full transition-all duration-500 md:min-w-[680px] ${
+        className={`fixed top-4 left-4 right-4 md:left-1/2 md:right-auto md:-translate-x-1/2 z-[70] flex items-center md:grid md:grid-cols-[auto_1fr_auto] px-5 py-3 md:px-6 md:py-3.5 rounded-full transition-all duration-500 md:min-w-[680px] ${
           scrolled
             ? 'bg-[#F5F0E8]/90 backdrop-blur-xl border border-[#1C3A2A]/12 shadow-[0_4px_24px_-4px_rgba(28,58,42,0.12)]'
             : 'bg-[#0A1A10]/40 backdrop-blur-sm border border-white/10'
@@ -209,7 +209,7 @@ function Navbar() {
           onClick={() => setMenuOpen((v) => !v)}
           aria-label={menuOpen ? 'Close menu' : 'Open menu'}
           aria-expanded={menuOpen}
-          className={`md:hidden ml-auto mr-2 w-9 h-9 flex flex-col items-center justify-center gap-[5px] rounded-full transition-colors duration-300 ${
+          className={`md:hidden ml-auto w-9 h-9 flex flex-col items-center justify-center gap-[5px] rounded-full transition-colors duration-300 ${
             scrolled ? 'text-[#1C3A2A]' : 'text-[#F5F0E8]'
           }`}
         >
@@ -217,18 +217,6 @@ function Navbar() {
           <span className={`block w-4 h-px bg-current transition-opacity duration-200 ${menuOpen ? 'opacity-0' : ''}`} />
           <span className={`block w-4 h-px bg-current transition-transform duration-200 ${menuOpen ? '-translate-y-[6px] -rotate-45' : ''}`} />
         </button>
-
-        {/* Mobile CTA — compact */}
-        <a
-          href="#counties"
-          className={`md:hidden text-xs font-semibold px-4 py-1.5 rounded-full transition-all duration-300 whitespace-nowrap ${
-            scrolled
-              ? 'bg-[#C4572B] text-[#F5F0E8]'
-              : 'bg-[#F5F0E8]/12 border border-[#F5F0E8]/25 text-[#F5F0E8]'
-          }`}
-        >
-          View
-        </a>
       </motion.nav>
 
       {/* Mobile floating menu */}
@@ -248,7 +236,7 @@ function Navbar() {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -8, scale: 0.98 }}
               transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
-              className={`md:hidden fixed top-[72px] left-1/2 -translate-x-1/2 z-[60] w-[calc(100vw-2rem)] max-w-sm rounded-3xl overflow-hidden border ${
+              className={`md:hidden fixed top-[72px] left-4 right-4 z-[60] rounded-3xl overflow-hidden border ${
                 scrolled
                   ? 'bg-[#F5F0E8]/95 backdrop-blur-xl border-[#1C3A2A]/12 shadow-[0_12px_40px_-8px_rgba(28,58,42,0.22)]'
                   : 'bg-[#0A1A10]/90 backdrop-blur-xl border-white/10 shadow-[0_12px_40px_-8px_rgba(0,0,0,0.45)]'
@@ -272,7 +260,7 @@ function Navbar() {
                 <a
                   href="#counties"
                   onClick={() => setMenuOpen(false)}
-                  className="mx-3 mt-2 mb-1 inline-flex items-center justify-center px-5 py-3 rounded-full bg-[#C4572B] text-[#F5F0E8] text-sm font-semibold tracking-wide"
+                  className="mt-2 mb-1 flex items-center justify-center px-5 py-3 rounded-2xl bg-[#C4572B] text-[#F5F0E8] text-sm font-semibold tracking-wide"
                 >
                   {nav.navCTALabel || 'View Counties'}
                 </a>
