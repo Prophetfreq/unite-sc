@@ -13,6 +13,7 @@ const DEFAULT_STATS = [
 ]
 import { supabase } from './supabase.js'
 import ContactForm from './components/ContactForm.jsx'
+import UpdatesModal from './components/UpdatesModal.jsx'
 
 // ─── Data ────────────────────────────────────────────────────────────────────
 
@@ -128,6 +129,7 @@ function Navbar() {
   const content = useContent()
   const nav = content.navigation || {}
   const brand = useBrand()
+  const { open: openUpdates } = useUpdates()
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 72)
@@ -191,16 +193,17 @@ function Navbar() {
         </div>
 
         {/* CTA — right (desktop) */}
-        <a
-          href="#counties"
+        <button
+          type="button"
+          onClick={openUpdates}
           className={`hidden md:inline-flex ml-6 text-sm font-semibold px-5 py-2 rounded-full transition-all duration-300 hover:scale-[1.03] active:scale-[0.98] whitespace-nowrap ${
             scrolled
               ? 'bg-[#C4572B] text-[#F5F0E8]'
               : 'bg-[#F5F0E8]/12 border border-[#F5F0E8]/25 text-[#F5F0E8]'
           }`}
         >
-          {nav.navCTALabel || 'View Counties'}
-        </a>
+          Get Updates
+        </button>
 
         {/* Mobile hamburger / close toggle */}
         <button
@@ -256,13 +259,13 @@ function Navbar() {
                     {label}
                   </a>
                 ))}
-                <a
-                  href="#counties"
-                  onClick={() => setMenuOpen(false)}
+                <button
+                  type="button"
+                  onClick={() => { setMenuOpen(false); openUpdates() }}
                   className="mt-2 mb-1 flex items-center justify-center px-5 py-3 rounded-2xl bg-[#C4572B] text-[#F5F0E8] text-sm font-semibold tracking-wide"
                 >
-                  {nav.navCTALabel || 'View Counties'}
-                </a>
+                  Get Updates
+                </button>
               </nav>
             </motion.div>
           </>
@@ -1633,6 +1636,8 @@ function SupportSection() {
 
 export const ContentContext = React.createContext(contentFallback)
 export const BrandContext = React.createContext({ logoUrl: null, brandName: 'Unite SC' })
+export const UpdatesContext = React.createContext({ open: () => {} })
+function useUpdates() { return useContext(UpdatesContext) }
 
 function useBrand() { return useContext(BrandContext) }
 
@@ -1641,6 +1646,7 @@ function useBrand() { return useContext(BrandContext) }
 export default function App() {
   const [siteContent, setSiteContent] = useState(null)
   const [brand, setBrand] = useState({ logoUrl: null, brandName: 'Unite SC' })
+  const [updatesOpen, setUpdatesOpen] = useState(false)
 
   useEffect(() => {
     // Fetch brand/logo independently — fast, isolated, can't be blocked by other field errors
@@ -1728,19 +1734,22 @@ export default function App() {
   return (
     <BrandContext.Provider value={brand}>
       <ContentContext.Provider value={content}>
-        <NoiseOverlay />
-        <Navbar />
-        <main>
-          <Hero />
-          <IntroSection />
-          <MandateSection />
-          <CountyTracker />
-          <SentinelSection />
-          <PrayerSection />
-          <SupportSection />
-          <ContactForm />
-        </main>
-        <Footer />
+        <UpdatesContext.Provider value={{ open: () => setUpdatesOpen(true) }}>
+          <NoiseOverlay />
+          <Navbar />
+          <main>
+            <Hero />
+            <IntroSection />
+            <MandateSection />
+            <CountyTracker />
+            <SentinelSection />
+            <PrayerSection />
+            <SupportSection />
+            <ContactForm />
+          </main>
+          <Footer />
+          <UpdatesModal isOpen={updatesOpen} onClose={() => setUpdatesOpen(false)} />
+        </UpdatesContext.Provider>
       </ContentContext.Provider>
     </BrandContext.Provider>
   )
