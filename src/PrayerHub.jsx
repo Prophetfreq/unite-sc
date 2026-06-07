@@ -1,6 +1,6 @@
 import React from 'react'
 import { motion } from 'framer-motion'
-import { MapPin, FileText, ArrowUpRight, ArrowLeft, NavigationArrow, BookOpen, Warning, UsersThree } from '@phosphor-icons/react'
+import { MapPin, FileText, ArrowUpRight, ArrowLeft, NavigationArrow, BookOpen, Warning, UsersThree, Clock } from '@phosphor-icons/react'
 
 // ─── Region colors (matches the homepage map) ────────────────────────────────
 const REGION_COLORS = {
@@ -82,6 +82,13 @@ const ASSIGNMENT = {
   ],
 }
 
+// ─── Where & when the team gathers first ─────────────────────────────────────
+const GATHERING = {
+  time: '10:30 AM',
+  address: '1036 Gregg Hwy, Aiken, SC 29801',
+  detail: 'We start together here for detailed instructions, prayer, and communion before heading out.',
+}
+
 // Build a turn-by-turn directions link that opens the phone's maps app.
 function directionsUrl(stop) {
   const dest = stop.gps || stop.address
@@ -157,8 +164,39 @@ export default function PrayerHub() {
         </div>
       </section>
 
-      {/* ── How to pray on-site ─────────────────────────────────────────── */}
+      {/* ── Gather first (start point) ──────────────────────────────────── */}
       <section className="max-w-5xl mx-auto px-6 -mt-12 relative z-10">
+        <div className="bg-white rounded-4xl border-2 border-clay/30 shadow-[0_12px_40px_-12px_rgba(196,87,43,0.22)] p-7 md:p-10">
+          <div className="flex items-center gap-3 mb-5">
+            <span className="inline-flex items-center justify-center w-11 h-11 rounded-2xl bg-clay/10 text-clay">
+              <Clock size={22} weight="duotone" />
+            </span>
+            <div>
+              <p className="text-xs font-mono uppercase tracking-[0.2em] text-clay">Start here · {GATHERING.time}</p>
+              <h2 className="font-display text-2xl text-forest leading-none mt-0.5">Gather first</h2>
+            </div>
+          </div>
+          <p className="text-[15px] text-stone leading-relaxed">{GATHERING.detail}</p>
+          <div className="mt-5 pt-5 border-t border-forest/[0.07] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <p className="flex items-start gap-1.5 text-sm text-forest font-medium leading-snug">
+              <MapPin size={16} weight="fill" className="mt-0.5 shrink-0 text-clay" />
+              {GATHERING.address}
+            </p>
+            <a
+              href={directionsUrl({ address: GATHERING.address })}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="shrink-0 inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-forest text-cream text-sm font-semibold hover:bg-pine transition-colors"
+            >
+              <NavigationArrow size={15} weight="fill" />
+              Get Directions
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* ── How to pray on-site ─────────────────────────────────────────── */}
+      <section className="max-w-5xl mx-auto px-6 mt-8">
         <div className="bg-white rounded-4xl border border-forest/10 shadow-[0_12px_40px_-12px_rgba(28,58,42,0.18)] p-7 md:p-10">
           <div className="flex items-center gap-3 mb-7">
             <span className="inline-flex items-center justify-center w-10 h-10 rounded-2xl bg-pine/10 text-pine">
@@ -262,6 +300,10 @@ export default function PrayerHub() {
             </motion.article>
           ))}
         </div>
+
+        <p className="mt-12 text-center text-sm text-stone italic">
+          All locations are subject to change as the Holy Spirit leads.
+        </p>
       </section>
 
       {/* ── Footer ──────────────────────────────────────────────────────── */}
