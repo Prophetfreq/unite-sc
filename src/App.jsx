@@ -1000,9 +1000,9 @@ function CountyModal({ county, onClose, countyVisits = {} }) {
                 <div className="flex items-start gap-3 bg-[#2E5240]/8 border border-[#2E5240]/15 rounded-3xl px-4 py-3.5">
                   <CheckCircle size={20} weight="fill" className="text-[#2E5240] flex-shrink-0 mt-0.5" />
                   <div>
-                    <div className="text-[#1C3A2A] font-semibold text-sm">Unity assignment complete</div>
+                    <div className="text-[#1C3A2A] font-semibold text-sm">Prayer assignment done</div>
                     <div className="text-[#6B6B5A] text-xs leading-relaxed mt-0.5">
-                      This county has been prayed over — breaking spiritual bondage and releasing unity.
+                      This county has been prayed over — breaking spiritual bondage. Church assignment will be Phase 2 in 2027.
                     </div>
                   </div>
                 </div>
