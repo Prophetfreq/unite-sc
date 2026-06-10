@@ -1,17 +1,9 @@
-import { useEffect, useRef } from 'react'
+import { useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X } from '@phosphor-icons/react'
-
-// Subsplash embedded signup form — values pulled from the dashboard embed snippet.
-const FORM_TARGET_ID = 'subsplash-embed-form-cbfa9dab-16be-4dbd-a29e-16efc91bffcd'
-const FORM_PATH = 'u/-3C6262/forms/d/cbfa9dab-16be-4dbd-a29e-16efc91bffcd?embed=1'
-const SUBSPLASH_ORIGIN = 'https://subsplash.com'
-const EMBED_SCRIPT_SRC =
-  'https://dashboard.static.subsplash.com/production/web-client/external/embed-1.1.0.js'
+import SubsplashUpdatesForm from './SubsplashUpdatesForm.jsx'
 
 export default function UpdatesModal({ isOpen, onClose }) {
-  const containerRef = useRef(null)
-
   // Close on Escape
   useEffect(() => {
     if (!isOpen) return
@@ -24,55 +16,6 @@ export default function UpdatesModal({ isOpen, onClose }) {
   useEffect(() => {
     document.body.style.overflow = isOpen ? 'hidden' : ''
     return () => { document.body.style.overflow = '' }
-  }, [isOpen])
-
-  // Load Subsplash's embed loader and render the form into the modal.
-  // Mirrors the official dashboard snippet: load embed-1.1.0.js, then call
-  // window.subsplashEmbed(path, origin, targetElementId). The Subsplash loader
-  // *replaces* the target node with its iframe, so we hand it a node we create
-  // imperatively inside a React-owned wrapper — that way React never tracks the
-  // node Subsplash mutates, and unmount/reopen stays clean.
-  useEffect(() => {
-    if (!isOpen) return
-    const wrapper = containerRef.current
-    if (!wrapper) return
-
-    const target = document.createElement('div')
-    target.id = FORM_TARGET_ID
-    target.style.minHeight = '360px'
-    wrapper.appendChild(target)
-
-    const renderForm = () => {
-      if (typeof window.subsplashEmbed === 'function') {
-        window.subsplashEmbed(FORM_PATH, SUBSPLASH_ORIGIN, FORM_TARGET_ID)
-      }
-    }
-
-    let scriptListener = null
-    if (typeof window.subsplashEmbed === 'function') {
-      renderForm()
-    } else {
-      const existing = document.querySelector(`script[src="${EMBED_SCRIPT_SRC}"]`)
-      if (existing) {
-        scriptListener = renderForm
-        existing.addEventListener('load', renderForm)
-      } else {
-        const script = document.createElement('script')
-        script.type = 'text/javascript'
-        script.src = EMBED_SCRIPT_SRC
-        script.onload = renderForm
-        document.body.appendChild(script)
-      }
-    }
-
-    return () => {
-      if (scriptListener) {
-        const existing = document.querySelector(`script[src="${EMBED_SCRIPT_SRC}"]`)
-        existing?.removeEventListener('load', scriptListener)
-      }
-      // Clear whatever Subsplash left behind so a reopen starts fresh.
-      wrapper.replaceChildren()
-    }
   }, [isOpen])
 
   return (
@@ -119,9 +62,7 @@ export default function UpdatesModal({ isOpen, onClose }) {
               </button>
             </div>
 
-            {/* Subsplash embedded form renders into a node we create imperatively
-                inside this React-owned wrapper (see effect above). */}
-            <div ref={containerRef} className="min-h-[360px]" />
+            <SubsplashUpdatesForm active={isOpen} />
           </motion.div>
         </motion.div>
       )}
