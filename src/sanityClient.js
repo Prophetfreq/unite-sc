@@ -35,6 +35,33 @@ export async function getBrandSettings() {
   }
 }
 
+// County visits live in Sanity (countyVisit documents) — edited via Sanity
+// Studio, replacing the old Supabase county_visits table which auto-paused
+// on the free tier and took the map down with it.
+// Returns a lookup keyed by county name, the shape SCMap/CountyModal expect.
+export async function getCountyVisits() {
+  const rows = await sanity.fetch(`*[_type == "countyVisit"]{
+    countyName,
+    visited,
+    visitDate,
+    church,
+    gatekeeperPublic,
+    summary,
+    "photos": photos[].asset->url
+  }`)
+  const visits = {}
+  for (const row of rows || []) {
+    visits[row.countyName] = {
+      visited: row.visited === true,
+      date: row.visitDate || null,
+      church: row.gatekeeperPublic === false ? null : row.church || null,
+      summary: row.summary || null,
+      photos: (row.photos || []).filter(Boolean),
+    }
+  }
+  return visits
+}
+
 export async function getSupportTiers() {
   const data = await sanity.fetch(`*[_id == "siteSettings"][0]{
     supportTiers[]{ name, amount, desc, tag, url, featured }

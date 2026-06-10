@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef, useContext } from 'react'
 import { motion, AnimatePresence, useInView } from 'framer-motion'
-import { ArrowRight, Circle, X } from '@phosphor-icons/react'
+import { ArrowRight, CheckCircle, Circle, X } from '@phosphor-icons/react'
 import { ComposableMap, Geographies, Geography } from 'react-simple-maps'
 import contentFallback from './content.json'
-import { getSiteSettings, getBrandSettings } from './sanityClient'
+import { getSiteSettings, getBrandSettings, getCountyVisits } from './sanityClient'
 
 const DEFAULT_STATS = [
   { value: '46', label: 'Counties' },
@@ -11,7 +11,6 @@ const DEFAULT_STATS = [
   { value: '18', label: 'Months' },
   { value: '2',  label: 'Sent Ones' },
 ]
-import { supabase } from './supabase.js'
 import ContactForm from './components/ContactForm.jsx'
 import UpdatesModal from './components/UpdatesModal.jsx'
 
@@ -283,12 +282,9 @@ function HeroProgressCard() {
   const TOTAL = 46
 
   useEffect(() => {
-    supabase
-      .from('county_visits')
-      .select('county')
-      .then(({ data }) => {
-        if (!data) return
-        const names = data.map(r => r.county)
+    getCountyVisits()
+      .then((visits) => {
+        const names = Object.keys(visits).filter((c) => visits[c].visited)
         setVisited(names.length)
         const rc = {}
         for (const [region, info] of Object.entries(COUNTIES)) {
@@ -296,6 +292,7 @@ function HeroProgressCard() {
         }
         setRegionCounts(rc)
       })
+      .catch(() => {})
   }, [])
 
   const pct = Math.round((visited / TOTAL) * 100)
@@ -997,6 +994,17 @@ function CountyModal({ county, onClose, countyVisits = {} }) {
 
             {visit?.visited ? (
               <div className="space-y-5">
+                {/* Phase one — unity assignment status */}
+                <div className="flex items-start gap-3 bg-[#2E5240]/8 border border-[#2E5240]/15 rounded-3xl px-4 py-3.5">
+                  <CheckCircle size={20} weight="fill" className="text-[#2E5240] flex-shrink-0 mt-0.5" />
+                  <div>
+                    <div className="text-[#1C3A2A] font-semibold text-sm">Unity assignment complete</div>
+                    <div className="text-[#6B6B5A] text-xs leading-relaxed mt-0.5">
+                      This county has been prayed over — breaking spiritual bondage and releasing unity.
+                    </div>
+                  </div>
+                </div>
+
                 {/* Visit date */}
                 {visit.date && (
                   <div className="font-mono text-[#6B6B5A] text-xs">Visited {visit.date}</div>
@@ -1054,35 +1062,12 @@ function CountyTracker() {
   const ref = useRef(null)
   const inView = useInView(ref, { once: true, margin: '-60px' })
 
-  // Fetch visit data from Supabase on mount
+  // Fetch visit data from Sanity on mount (edited in Sanity Studio → County Visits)
   useEffect(() => {
-    async function fetchVisits() {
-      const { data, error } = await supabase
-        .from('county_visits')
-        .select('county_name, visited, visit_date, church_name, summary, photos')
-
-      if (error) {
-        console.error('Error fetching county visits:', error)
-        setLoading(false)
-        return
-      }
-
-      // Transform rows into a lookup object keyed by county name
-      const visits = {}
-      for (const row of data) {
-        visits[row.county_name] = {
-          visited: row.visited,
-          date: row.visit_date,
-          church: row.church_name,
-          summary: row.summary,
-          photos: row.photos || [],
-        }
-      }
-      setCountyVisits(visits)
-      setLoading(false)
-    }
-
-    fetchVisits()
+    getCountyVisits()
+      .then(setCountyVisits)
+      .catch((error) => console.error('Error fetching county visits:', error))
+      .finally(() => setLoading(false))
   }, [])
 
   const visitedCount = Object.values(countyVisits).filter((v) => v.visited).length
