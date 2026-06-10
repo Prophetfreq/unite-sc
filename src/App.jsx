@@ -883,8 +883,10 @@ function SCMap({ activeRegion, onCountyClick, countyVisits = {} }) {
                 const isVisited = countyVisits[county]?.visited
                 const isHovered = hovered === county
 
+                // Visited is always clay (matches the legend) — region colors can't
+                // mark visited counties because Midlands' color equals the default fill.
                 const baseFill = isVisited
-                  ? REGION_COLORS[region]
+                  ? '#C4572B'
                   : inActive
                   ? '#2E5240'
                   : '#1A3228'
@@ -1358,6 +1360,14 @@ function PrayerSection() {
 
 function Footer() {
   const content = useContent()
+  const [visitedCount, setVisitedCount] = useState(0)
+
+  useEffect(() => {
+    getCountyVisits()
+      .then((visits) => setVisitedCount(Object.values(visits).filter((v) => v.visited).length))
+      .catch(() => {})
+  }, [])
+
   return (
     <footer className="bg-[#1C3A2A] rounded-t-[4rem] px-6 md:px-16 pt-16 pb-10">
       <div className="max-w-[1400px] mx-auto">
@@ -1421,7 +1431,7 @@ function Footer() {
         <div className="border-t border-[#2E5240] pt-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-center gap-2.5">
             <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="font-mono text-[#4A7A62] text-xs">Mandate Active — 0 of 46 Counties Visited</span>
+            <span className="font-mono text-[#4A7A62] text-xs">Mandate Active — {visitedCount} of 46 Counties Visited</span>
           </div>
           <div className="flex flex-col sm:items-end gap-1">
             <div className="font-mono text-[#4A7A62]/40 text-xs">Unite SC — Radiant Eternity &copy; 2026</div>
