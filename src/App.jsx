@@ -78,8 +78,8 @@ const DEFAULT_SENTINEL_TRAITS = [
     desc: 'When they pray, the county moves. People inside and outside their congregation respect the weight they carry.',
   },
   {
-    label: 'Cross-stream trust',
-    desc: 'Pastors from different denominations and backgrounds trust them — not just their own tribe.',
+    label: 'Ecumenical trust',
+    desc: 'Pastors from different denominations, streams, and traditions trust them — not just their own tribe. One new man, not one brand.',
   },
   {
     label: 'A posture of receiving',
@@ -1200,7 +1200,7 @@ function SentinelSection() {
               <span className="font-display italic text-[#2E5240]">{s.headlineItalic || 'The most faithful.'}</span>
             </motion.h2>
             <motion.p variants={fadeUp} className="text-[#6B6B5A] text-sm leading-relaxed max-w-[38ch] mb-6">
-              {s.body || 'In every county there is a person — a pastor, prophet, apostolic voice, or prayer leader — who holds the spiritual gate of that area. They may not be well known outside their county. But they are trusted across streams, and the territory responds when they move.'}
+              {s.body || 'In every county there is a person — a pastor, prophet, apostolic voice, or prayer leader — who holds the spiritual gate of that area. This assignment is ecumenical: every stream and denomination that calls Jesus Lord has a place in it. The gatekeeper may not be well known outside their county. But they are trusted across streams, and the territory responds when they move.'}
             </motion.p>
             <motion.div
               variants={fadeUp}
@@ -1325,7 +1325,7 @@ function PrayerSection() {
 
           {/* Scripture stack */}
           <motion.div variants={stagger} className="space-y-4 md:pt-16">
-            {SCRIPTURES.map((s) => (
+            {(content.scriptures?.length ? content.scriptures : SCRIPTURES).map((s) => (
               <motion.div
                 key={s.ref}
                 variants={fadeUp}
